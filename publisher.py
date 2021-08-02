@@ -9,6 +9,12 @@ mqttc = mqtt.Client("python_pub")
 mqttc.connect(serviceIP, servicePort)
 
 while True:
-	mqttc.publish(topic, "testing")
-	print("testing")
-	sleep(1)
+	try:
+		input_file = open('/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations/08:c5:e1:f1:fc:11/stats','r')
+		input = input_file.readline()
+		input_file.close()
+		mqttc.publish(topic, input)
+		print(input)
+		sleep(1)
+	except:
+		continue
