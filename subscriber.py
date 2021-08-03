@@ -1,3 +1,4 @@
+import json
 import paho.mqtt.client as mqtt
 
 def on_connect(client, userdata, flags, rc):
@@ -5,7 +6,20 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("TESTING")
 
 def on_message(client, userdata, msg):
-    print(msg.payload.decode().split()[6])
+    input = msg.payload.decode().split()
+    mcs_index = input[0]
+    ppdu_rate = float(input[1])
+    output = {
+        "MCS" : mcs_index,
+        "PPDU" : ppdu_rate
+    }
+    try:
+        output_file = open("output.json","w")
+        json.dump(output, output_file)
+        output_file.close()
+        print(output)
+    except:
+        pass
 
 client = mqtt.Client()
 client.on_connect = on_connect
