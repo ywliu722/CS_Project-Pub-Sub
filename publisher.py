@@ -1,3 +1,4 @@
+from threading import current_thread
 from time import sleep
 import paho.mqtt.client as mqtt
 
@@ -7,6 +8,8 @@ topic = "TESTING"
 
 mqttc = mqtt.Client("python_pub")
 mqttc.connect(serviceIP, servicePort)
+current_mcs = ""
+current_ppdu = ""
 
 while True:
 	try:
@@ -15,9 +18,11 @@ while True:
 		input_file.close()
 		mcs_index = input[0].split()[6]
 		ppdu_rate = input[1].split()[2].split('%')[0]
-		output = mcs_index + " " + ppdu_rate
-		mqttc.publish(topic, output)
-		print(output)
-		sleep(1)
+		if mcs_index != current_mcs or ppdu_rate != current_ppdu:
+			output = mcs_index + " " + ppdu_rate
+			mqttc.publish(topic, output)
+			current_mcs = mcs_index
+			current_ppdu = ppdu_rate
+			print(output)
 	except:
 		continue
