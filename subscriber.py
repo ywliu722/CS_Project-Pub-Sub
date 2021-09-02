@@ -1,6 +1,7 @@
 import json
 import paho.mqtt.client as mqtt
 
+packet_size = 1470
 bitrate= {"GI": {}, "SGI": {}}
 bitrate["GI"] = {"MCS0": 29.3, "MCS1": 58.5, "MCS2": 87.8, "MCS3": 117.0, "MCS4": 175.5,
                          "MCS5": 234.0,"MCS6": 263.3, "MCS7": 292.5, "MCS8": 351.0, "MCS9": 390.0}
@@ -17,15 +18,23 @@ def on_message(client, userdata, msg):
     mcs_index = input[1]
     ppdu_rate = float(input[2])
     GI = input[3]
-    theoretical_rate = bitrate[GI][mcs_index] * (100 - ppdu_rate) * 0.01 * nss
+    interval = int(input[4])
+    success = int(input[5])
+    ppdu_cnt = int(input[6])
+    physical_rate = bitrate[GI][mcs_index] * (100 - ppdu_rate) * 0.01 * nss
+    current_rate = ( float(ppdu_cnt * success * packet_size)  / (float(interval) / 1000) ) * 8
     output = {
         "NSS" : nss,
         "MCS" : mcs_index,
         "PPDU" : ppdu_rate,
-        "GI" : GI
+        "GI" : GI,
+        "Interval" : interval,
+        "Success" : success,
+        "PPDU Count" : ppdu_cnt
     }
-    print(output)
-    print(theoretical_rate)
+    #print(output)
+    #print("Physical Rate: " + str(physical_rate))
+    print("Current Rate: " + str(current_rate / 1000000) + " Mbits/s")
     '''
     try:
         output_file = open("output.json","w")
