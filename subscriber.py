@@ -22,10 +22,12 @@ def on_message(client, userdata, msg):
     GI = input[3]
     interval = int(input[4])
     success = int(input[5])
-    ppdu_cnt = int(input[6])
+    data_len = int(input[6])
+    ppdu_cnt = int(input[7])
     #physical_rate = bitrate[GI][mcs_index] * (100 - ppdu_rate) * 0.01 * nss
     #current_rate = ( float(ppdu_cnt * success * packet_size)  / (float(interval) / 1000) ) * 8
-    total_bytes = total_bytes + float(ppdu_cnt * success * packet_size)
+    #total_bytes = total_bytes + float(ppdu_cnt * success * packet_size)
+    current_rate = (float(data_len)/(float(interval) / 1000)) * 8
     output = {
         "NSS" : nss,
         "MCS" : mcs_index,
@@ -33,12 +35,13 @@ def on_message(client, userdata, msg):
         "GI" : GI,
         "Interval" : interval,
         "Success" : success,
+        "Data Length": data_len,
         "PPDU Count" : ppdu_cnt
     }
     #print(output)
     #print("Physical Rate: " + str(physical_rate))
-    #print("Current Rate: " + str(current_rate / 1000000) + " Mbits/s")
-    print("Accummulated bytes: " + str(total_bytes/1000000) + " MBytes")
+    print("Current Rate: " + str(current_rate / 1000000) + " Mbits/s")
+    #print("Accummulated bytes: " + str(total_bytes/1000000) + " MBytes")
     '''
     try:
         output_file = open("output.json","w")

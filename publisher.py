@@ -8,11 +8,9 @@ topic = "TESTING"
 
 mqttc = mqtt.Client("python_pub")
 mqttc.connect(serviceIP, servicePort)
-current_nss = ""
-current_mcs = ""
-current_ppdu = ""
-current_GI = True
-current_msec = ""
+
+current_msec = "0"
+current_data_len = "0"
 
 while True:
 	try:
@@ -29,22 +27,19 @@ while True:
 		ppdu_rate = input[1].split()[2].split('%')[0]
 		current_success = input[8].split()[1]
 		msec = input[9].split()[1]
-		ppdu_cnt = input[10].split()[2]
-		if current_msec == "":
-			current_msec = msec
-		#if nss != current_nss or mcs_index != current_mcs or ppdu_rate != current_ppdu or GI != current_GI:
+		data_len = input[10].split()[1]
+		ppdu_cnt = input[11].split()[2]
+
 		if msec != current_msec:
 			interval = int(msec) - int(current_msec)
+			new_data = int(data_len) - int(current_data_len)
 			if GI:
-				output = nss + " " + mcs_index + " " + ppdu_rate + " SGI " + str(interval) + " " + current_success + " " + ppdu_cnt
+				output = nss + " " + mcs_index + " " + ppdu_rate + " SGI " + str(interval) + " " + current_success + " " + str(new_data) + " " + ppdu_cnt
 			else:
-				output = nss + " " + mcs_index + " " + ppdu_rate + " GI " + str(interval) + " " + current_success + " " + ppdu_cnt
+				output = nss + " " + mcs_index + " " + ppdu_rate + " GI " + str(interval) + " " + current_success + " " + str(new_data) + " " + ppdu_cnt
 			mqttc.publish(topic, output)
-			current_nss = nss
-			current_mcs = mcs_index
-			current_ppdu = ppdu_rate
-			current_GI = GI
 			current_msec = msec
+			current_data_len = data_len
 			print(output)
 	except:
 		continue
