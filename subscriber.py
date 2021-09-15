@@ -20,27 +20,30 @@ def on_message(client, userdata, msg):
     mcs_index = input[1]
     ppdu_rate = float(input[2])
     GI = input[3]
-    interval = int(input[4])
-    success = int(input[5])
-    data_len = int(input[6])
-    ppdu_cnt = int(input[7])
+    #interval = int(input[4])
+    success = int(input[4])
+    #data_len = int(input[6])
+    #ppdu_cnt = int(input[7])
+    rate = float(input[5])
     #physical_rate = bitrate[GI][mcs_index] * (100 - ppdu_rate) * 0.01 * nss
     #current_rate = ( float(ppdu_cnt * success * packet_size)  / (float(interval) / 1000) ) * 8
     #total_bytes = total_bytes + float(ppdu_cnt * success * packet_size)
-    current_rate = (float(data_len)/(float(interval) / 1000)) * 8
+    #current_rate = (float(data_len)/(float(interval) / 1000)) * 8
     output = {
         "NSS" : nss,
         "MCS" : mcs_index,
         "PPDU" : ppdu_rate,
         "GI" : GI,
-        "Interval" : interval,
+        #"Interval" : interval,
         "Success" : success,
-        "Data Length": data_len,
-        "PPDU Count" : ppdu_cnt
+        #"Data Length": data_len,
+        #"PPDU Count" : ppdu_cnt
+        "Rate" : rate
     }
     #print(output)
     #print("Physical Rate: " + str(physical_rate))
-    print("Current Rate: " + str(current_rate / 1000000) + " Mbits/s")
+    #print("Current Rate: " + str(current_rate / 1000000) + " Mbits/s")
+    print("Current Rate Average Bitrate: " + str(rate)+ " MBits/s")
     #print("Accummulated bytes: " + str(total_bytes/1000000) + " MBytes")
     '''
     try:
