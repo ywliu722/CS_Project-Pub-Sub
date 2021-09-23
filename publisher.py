@@ -24,25 +24,19 @@ while True:
 			GI = True
 		else:
 			GI = False
-		ppdu_rate = input[1].split()[2].split('%')[0]
-		current_success = input[8].split()[1]
-		msec = input[10].split()[2]
-		#data_len = input[10].split()[1]
-		#ppdu_cnt = input[9].split()[2]
-		rate = input[12].split()[4]
+		msec = input[7].split()[1]
+		data_len = input[8].split()[1]
 
 		if msec != current_msec:
-			interval = int(msec) - int(current_msec)
-			#new_data = int(data_len) - int(current_data_len)
+			new_data = int(data_len) - int(current_data_len)
 			if GI:
-				#output = nss + " " + mcs_index + " " + ppdu_rate + " SGI " + str(interval) + " " + current_success + " " + str(new_data) + " " + ppdu_cnt
-				output = nss + " " + mcs_index + " " + ppdu_rate + " SGI " + current_success + " " + rate
+				output = nss + " " + mcs_index + " SGI " + str(new_data)
 			else:
-				#output = nss + " " + mcs_index + " " + ppdu_rate + " GI " + str(interval) + " " + current_success + " " + str(new_data) + " " + ppdu_cnt
-				output = nss + " " + mcs_index + " " + ppdu_rate + " GI " + current_success + " " + rate
+				output = nss + " " + mcs_index + " GI " + str(new_data)
 			mqttc.publish(topic, output)
 			current_msec = msec
-			#current_data_len = data_len
+			current_data_len = data_len
 			print(output)
+			sleep(1)
 	except:
 		continue
