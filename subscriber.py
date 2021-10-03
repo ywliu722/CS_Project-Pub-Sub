@@ -19,6 +19,7 @@ def on_message(client, userdata, msg):
     mcs_index = input[1]
     GI = input[2]
     data_len = float(input[3])
+    airtime = int(input[4]) + int(input[5]) + int(input[6]) + int(input[7])
 
     output = {
         "NSS" : nss,
@@ -28,6 +29,7 @@ def on_message(client, userdata, msg):
     }
     #print(output)
     print("Current Rate: " + str(data_len * 8 / 1000000) + " Mbits/s")
+    print("Airtime: " + str(airtime))
     '''
     try:
         output_file = open("output.json","w")

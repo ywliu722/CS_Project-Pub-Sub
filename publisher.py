@@ -11,6 +11,8 @@ mqttc.connect(serviceIP, servicePort)
 
 current_msec = "0"
 current_data_len = "0"
+airtime={0,0,0,0}
+current_airtime={0,0,0,0}
 
 while True:
 	try:
@@ -26,6 +28,10 @@ while True:
 			GI = False
 		msec = input[7].split()[1]
 		data_len = input[8].split()[1]
+		airtime[0] = int(input[9].split()[2])
+		airtime[1] = int(input[10].split()[2])
+		airtime[2] = int(input[11].split()[2])
+		airtime[3] = int(input[12].split()[2])
 
 		if msec != current_msec:
 			new_data = int(data_len) - int(current_data_len)
@@ -33,6 +39,9 @@ while True:
 				output = nss + " " + mcs_index + " SGI " + str(new_data)
 			else:
 				output = nss + " " + mcs_index + " GI " + str(new_data)
+			for i in range(4):
+				output = output + " " + str(airtime[i] - current_airtime[i])
+				current_airtime[i] = airtime[i]
 			mqttc.publish(topic, output)
 			current_msec = msec
 			current_data_len = data_len
