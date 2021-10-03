@@ -1,5 +1,5 @@
 from threading import current_thread
-from time import sleep, time
+import time
 import paho.mqtt.client as mqtt
 
 serviceIP = "192.168.1.148"
@@ -26,7 +26,9 @@ while True:
 		input_file2 = open('/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations/48:45:20:98:d4:1a/stats','r')
 		input2 = input_file2.readlines()
 		input_file2.close()
-		time_now = time().time
+		time_now = time.time()
+		#print(time_now)
+		#print(current_time)
 		if time_now - current_time < 1 :
 			continue
 		nss = input[0].split()[5]
@@ -58,7 +60,7 @@ while True:
 			for i in range(4):
 				output = output + " " + str(airtime2[i] - current_airtime2[i])
 				current_airtime2[i] = airtime2[i]
-			output = output + " " + str(time_now - time_now - current_time)
+			output = output + " " + str(time_now - current_time)
 			mqttc.publish(topic, output)
 			current_time = time_now
 			current_msec = msec
