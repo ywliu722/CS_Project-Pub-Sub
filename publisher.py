@@ -27,8 +27,6 @@ while True:
 		input2 = input_file2.readlines()
 		input_file2.close()
 		time_now = time.time()
-		#print(time_now)
-		#print(current_time)
 		if time_now - current_time < 1 :
 			continue
 		nss = input[0].split()[5]
