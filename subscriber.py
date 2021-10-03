@@ -21,6 +21,7 @@ def on_message(client, userdata, msg):
     data_len = float(input[3])
     airtime = int(input[4]) + int(input[5]) + int(input[6]) + int(input[7])
     airtime2 = int(input[8]) + int(input[9]) + int(input[10]) + int(input[11])
+    interval = float(input[12])
 
     output = {
         "NSS" : nss,
@@ -31,7 +32,10 @@ def on_message(client, userdata, msg):
     #print(output)
     print("Current Rate: " + str(data_len * 8 / 1000000) + " Mbits/s")
     print("Airtime: " + str(airtime) + " " + str(airtime2))
+    print("Airtime percentage: " + str(( airtime/ (interval * 1000000))*100) + "%")
+    print("Airtime percentage: " + str(( airtime2/ (interval * 1000000))*100) + "%\n")
     print("Total airtime: " + str(airtime + airtime2))
+    print("Total Airtime percentage: " + str(( airtime + airtime2/ (interval * 1000000))*100) + "%\n")
     '''
     try:
         output_file = open("output.json","w")
