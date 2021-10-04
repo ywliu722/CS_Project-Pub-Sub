@@ -8,3 +8,5 @@
 2. MCS index
 3. GI (Guard Interval)
 4. Total bits sent in the interval (in float form)
+5. Tx airtime of 2 devices
+6. Read interval (for calculating the percentage of airtime/interval)
