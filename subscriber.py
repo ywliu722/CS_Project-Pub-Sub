@@ -30,7 +30,7 @@ def on_message(client, userdata, msg):
         "Data Length": data_len
     }
     #print(output)
-    print("Current Rate: " + str(data_len * 8 / 1000000) + " Mbits/s")
+    print("Current Rate: " + str((data_len * 8 / 1000000)/interval) + " Mbits/s")
     print("Airtime: " + str(airtime) + " " + str(airtime2))
     print("Airtime percentage: " + str(( airtime/ (interval * 1000000))*100) + "%")
     print("Airtime percentage: " + str(( airtime2/ (interval * 1000000))*100) + "%\n")
