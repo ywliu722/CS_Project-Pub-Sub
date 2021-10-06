@@ -36,6 +36,7 @@ def on_message(client, userdata, msg):
     print("Airtime percentage: " + str(( airtime2/ (interval * 1000000))*100) + "%\n")
     print("Total airtime: " + str(airtime + airtime2))
     print("Total Airtime percentage: " + str(( (airtime + airtime2)/ (interval * 1000000))*100) + "%\n")
+    print("-----------------------------------------------")
     '''
     try:
         output_file = open("output.json","w")
