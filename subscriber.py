@@ -20,8 +20,11 @@ def on_message(client, userdata, msg):
     GI = input[2]
     data_len = float(input[3])
     airtime = int(input[4]) + int(input[5]) + int(input[6]) + int(input[7])
-    airtime2 = int(input[8]) + int(input[9]) + int(input[10]) + int(input[11])
-    interval = float(input[12])
+    #airtime2 = int(input[8]) + int(input[9]) + int(input[10]) + int(input[11])
+    #interval = float(input[12])
+    interval = float(input[8])
+    send_tx = float(input[9])
+    ack_tx = float(input[10])
 
     output = {
         "NSS" : nss,
@@ -31,11 +34,14 @@ def on_message(client, userdata, msg):
     }
     #print(output)
     print("Current Rate: " + str((data_len * 8 / 1000000)/interval) + " Mbits/s")
-    print("Airtime: " + str(airtime) + " " + str(airtime2))
+    #print("Airtime: " + str(airtime) + " " + str(airtime2))
+    print("Airtime: " + str(airtime))
     print("Airtime percentage: " + str(( airtime/ (interval * 1000000))*100) + "%")
-    print("Airtime percentage: " + str(( airtime2/ (interval * 1000000))*100) + "%\n")
-    print("Total airtime: " + str(airtime + airtime2))
-    print("Total Airtime percentage: " + str(( (airtime + airtime2)/ (interval * 1000000))*100) + "%")
+    #print("Airtime percentage: " + str(( airtime2/ (interval * 1000000))*100) + "%\n")
+    #print("Total airtime: " + str(airtime + airtime2))
+    #print("Total Airtime percentage: " + str(( (airtime + airtime2)/ (interval * 1000000))*100) + "%")
+    print("Send Tx time: " + str(send_tx))
+    print("Ack Tx time: " + str(ack_tx))
     print("-----------------------------------------------")
     '''
     try:
