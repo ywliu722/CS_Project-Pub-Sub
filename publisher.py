@@ -14,8 +14,10 @@ current_data_len = "0"
 current_time = 0.0
 airtime = [0,0,0,0]
 current_airtime = [0,0,0,0]
-airtime2 = [0,0,0,0]
-current_airtime2 = [0,0,0,0]
+#airtime2 = [0,0,0,0]
+#current_airtime2 = [0,0,0,0]
+current_send_tx = 0
+current_ack_tx = 0
 
 while True:
 	try:
@@ -49,8 +51,8 @@ while True:
 		airtime2[2] = int(input2[11].split()[2])
 		airtime2[3] = int(input2[12].split()[2])
 		'''
-		send_tx_time = input[21].split()[2]
-		ack_tx_time = input[22].split()[2]
+		send_tx_time = int(input[21].split()[2])
+		ack_tx_time = int(input[22].split()[2])
 		
 		if msec != current_msec:
 			new_data = int(data_len) - int(current_data_len)
@@ -67,11 +69,13 @@ while True:
 				current_airtime2[i] = airtime2[i]
 			'''
 			output = output + " " + str(time_now - current_time)
-			output = output + " " + send_tx_time + " " + ack_tx_time
+			output = output + " " + str(send_tx_time - current_send_tx) + " " + str(ack_tx_time - current_ack_tx)
 			mqttc.publish(topic, output)
 			current_time = time_now
 			current_msec = msec
 			current_data_len = data_len
+			current_send_tx = send_tx_time
+			current_ack_tx = ack_tx_time
 			print(output)
 	except:
 		continue
