@@ -25,6 +25,7 @@ def on_message(client, userdata, msg):
     interval = float(input[8])
     send_tx = float(input[9])
     ack_tx = float(input[10])
+    tx = float(input[11])
 
     output = {
         "NSS" : nss,
@@ -42,6 +43,8 @@ def on_message(client, userdata, msg):
     #print("Total Airtime percentage: " + str(( (airtime + airtime2)/ (interval * 1000000))*100) + "%")
     print("Send Tx time: " + str(send_tx))
     print("Ack Tx time: " + str(ack_tx))
+    print("Tx: " + str(tx))
+    print("Tx percentage: " + str(( tx/ (interval * 1000000))*100) + "%")
     print("-----------------------------------------------")
     '''
     try:
