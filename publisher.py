@@ -53,7 +53,7 @@ while True:
 			else:
 				output = nss + " " + mcs_index + " GI " + str(new_data)
 
-			output = output + " " + str(time_now - current_time) + str(tx - current_tx)
+			output = output + " " + str(time_now - current_time) + " " + str(tx - current_tx)
 			if(second_device):
 				output = output + " " + str(second_tx - current_second_tx)
 				current_second_tx = second_tx
