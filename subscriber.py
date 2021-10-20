@@ -8,6 +8,7 @@ bitrate["GI"] = {"MCS0": 29.3, "MCS1": 58.5, "MCS2": 87.8, "MCS3": 117.0, "MCS4"
 bitrate["SGI"] = {"MCS0": 32.5, "MCS1": 65.0, "MCS2": 97.5, "MCS3": 130.0, "MCS4": 195.0,
                          "MCS5": 260.0,"MCS6": 292.5, "MCS7": 325.0, "MCS8": 390.0, "MCS9": 433.3}
 '''
+second_device = False
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
@@ -19,13 +20,10 @@ def on_message(client, userdata, msg):
     mcs_index = input[1]
     GI = input[2]
     data_len = float(input[3])
-    airtime = int(input[4]) + int(input[5]) + int(input[6]) + int(input[7])
-    #airtime2 = int(input[8]) + int(input[9]) + int(input[10]) + int(input[11])
-    #interval = float(input[12])
-    interval = float(input[8])
-    send_tx = float(input[9])
-    ack_tx = float(input[10])
-    tx = float(input[11])
+    interval = float(input[4])
+    tx = float(input[5])
+    if(second_device):
+        second_tx = float(input[6])
 
     output = {
         "NSS" : nss,
@@ -35,16 +33,15 @@ def on_message(client, userdata, msg):
     }
     #print(output)
     print("Current Rate: " + str((data_len * 8 / 1000000)/interval) + " Mbits/s")
-    #print("Airtime: " + str(airtime) + " " + str(airtime2))
-    print("Airtime: " + str(airtime))
-    print("Airtime percentage: " + str(( airtime/ (interval * 1000000))*100) + "%")
-    #print("Airtime percentage: " + str(( airtime2/ (interval * 1000000))*100) + "%\n")
-    #print("Total airtime: " + str(airtime + airtime2))
-    #print("Total Airtime percentage: " + str(( (airtime + airtime2)/ (interval * 1000000))*100) + "%")
-    print("Send Tx time: " + str(send_tx))
-    print("Ack Tx time: " + str(ack_tx))
-    print("Tx: " + str(tx))
-    print("Tx percentage: " + str(( tx/ (interval * 1000000))*100) + "%")
+    if(second_device):
+        print("Tx: " + str(tx))
+        print("Tx percentage: " + str(( tx/ (interval * 1000000))*100) + "%")
+        print("Tx_2: " + str(second_tx))
+        print("Tx_2 percentage: " + str(( second_tx/ (interval * 1000000))*100) + "%")
+        print("Tx_total percentage: " + str(( tx + second_tx/ (interval * 1000000))*100) + "%")
+    else:
+        print("Tx: " + str(tx))
+        print("Tx percentage: " + str(( tx/ (interval * 1000000))*100) + "%")
     print("-----------------------------------------------")
     '''
     try:
