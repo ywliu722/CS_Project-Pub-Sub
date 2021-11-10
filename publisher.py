@@ -14,7 +14,7 @@ current_data_len = 0
 current_time = 0.0
 current_tx = 0
 current_second_tx = 0
-second_device = True
+second_device = False
 
 while True:
 	try:
