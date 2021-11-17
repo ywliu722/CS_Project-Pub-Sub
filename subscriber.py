@@ -25,6 +25,7 @@ throughput["NSS2"]["SGI"] = {"MCS0": 49.65, "MCS1": 93.7, "MCS2": 139.5, "MCS3":
 second_device = False
 bw_1080 = 49    # required bandwidth for 1080p
 bw_720 = 25     # required bandwidth for 720p
+#history_airtime = -1
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
@@ -41,12 +42,6 @@ def on_message(client, userdata, msg):
     if(second_device):
         second_tx = float(input[6])
 
-    output = {
-        "NSS" : nss,
-        "MCS" : mcs_index,
-        "GI" : GI,
-        "Data Length": data_len
-    }
     max_throughput = throughput[nss][GI][mcs_index]
     airtime_percentage = tx / (interval * 1000000)
     expected_throughput = max_throughput * airtime_percentage

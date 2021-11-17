@@ -1,4 +1,5 @@
 from threading import current_thread
+from os import listdir
 import time
 import paho.mqtt.client as mqtt
 
@@ -18,21 +19,23 @@ second_device = False
 
 while True:
 	try:
+		# busy waiting until reaching 1 second
+		time_now = time.time()
+		if time_now - current_time < 1 :
+			continue
+
 		# read device 1
 		input_file = open('/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations/08:c5:e1:f1:fc:11/stats','r')
 		input = input_file.readlines()
 		input_file.close()
 		
+		dirs = listdir('/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations')
+		print(dirs)
 		# read device 2
 		if(second_device):
 			input_file2 = open('/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations/48:45:20:98:d4:1a/stats','r')
 			input2 = input_file2.readlines()
 			input_file2.close()
-
-		# busy waiting until reaching 1 second
-		time_now = time.time()
-		if time_now - current_time < 1 :
-			continue
 
 		nss = input[0].split()[5]
 		mcs_index = input[0].split()[6]
