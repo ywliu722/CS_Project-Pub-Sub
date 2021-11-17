@@ -22,7 +22,7 @@ throughput["NSS2"]["GI"] = {"MCS0": 29.3, "MCS1": 58.5, "MCS2": 87.8, "MCS3": 11
 throughput["NSS2"]["SGI"] = {"MCS0": 49.65, "MCS1": 93.7, "MCS2": 139.5, "MCS3": 192.5, "MCS4": 280.0,
                              "MCS5": 383.0,"MCS6": 409.0, "MCS7": 452.0, "MCS8": 517.0, "MCS9": 571.0}
  
-second_device = False
+second_device = True
 bw_1080 = 49    # required bandwidth for 1080p
 bw_720 = 25     # required bandwidth for 720p
 #history_airtime = -1
@@ -52,7 +52,7 @@ def on_message(client, userdata, msg):
     output = {
         "quality" : video_quality
     }
-    '''
+    
     #print(output)
     print("Current Rate: " + str((data_len * 8 / 1000000)/interval) + " Mbits/s")
     if(second_device):
@@ -65,6 +65,7 @@ def on_message(client, userdata, msg):
         print("Tx: " + str(tx))
         print("Tx percentage: " + str(( tx/ (interval * 1000000))*100) + "%")
     print("-----------------------------------------------")
+    
     '''
     try:
         input_file = open ('output.json','r')
@@ -78,6 +79,7 @@ def on_message(client, userdata, msg):
             print(output)
     except:
         pass
+    '''
     
 
 client = mqtt.Client()
