@@ -22,7 +22,7 @@ throughput["NSS2"]["GI"] = {"MCS0": 29.3, "MCS1": 58.5, "MCS2": 87.8, "MCS3": 11
 throughput["NSS2"]["SGI"] = {"MCS0": 49.65, "MCS1": 93.7, "MCS2": 139.5, "MCS3": 192.5, "MCS4": 280.0,
                              "MCS5": 383.0,"MCS6": 409.0, "MCS7": 452.0, "MCS8": 517.0, "MCS9": 571.0}
  
-second_device = True
+multi_device = True
 bw_1080 = 49    # required bandwidth for 1080p
 bw_720 = 25     # required bandwidth for 720p
 #history_airtime = -1
@@ -39,8 +39,8 @@ def on_message(client, userdata, msg):
     data_len = float(input[3])
     interval = float(input[4])
     tx = float(input[5])
-    if(second_device):
-        second_tx = float(input[6])
+    if(multi_device):
+        multi_tx = float(input[6])
 
     max_throughput = throughput[nss][GI][mcs_index]
     airtime_percentage = tx / (interval * 1000000)
@@ -55,12 +55,12 @@ def on_message(client, userdata, msg):
     
     #print(output)
     print("Current Rate: " + str((data_len * 8 / 1000000)/interval) + " Mbits/s")
-    if(second_device):
+    if(multi_device):
         print("Tx: " + str(tx))
         print("Tx percentage: " + str(( tx/ (interval * 1000000))*100) + "%")
-        print("Tx_2: " + str(second_tx))
-        print("Tx_2 percentage: " + str(( second_tx/ (interval * 1000000))*100) + "%")
-        print("Tx_total percentage: " + str(( (tx + second_tx)/ (interval * 1000000))*100) + "%")
+        print("Tx_2: " + str(multi_tx))
+        print("Tx_2 percentage: " + str(( multi_tx/ (interval * 1000000))*100) + "%")
+        print("Tx_total percentage: " + str(( (tx + multi_tx)/ (interval * 1000000))*100) + "%")
     else:
         print("Tx: " + str(tx))
         print("Tx percentage: " + str(( tx/ (interval * 1000000))*100) + "%")
