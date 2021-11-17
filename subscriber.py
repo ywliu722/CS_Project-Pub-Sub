@@ -25,7 +25,8 @@ throughput["NSS2"]["SGI"] = {"MCS0": 49.65, "MCS1": 93.7, "MCS2": 139.5, "MCS3":
 multi_device = True
 bw_1080 = 49    # required bandwidth for 1080p
 bw_720 = 25     # required bandwidth for 720p
-#history_airtime = -1
+alpha = 1/4
+history_airtime = -1
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
@@ -42,9 +43,14 @@ def on_message(client, userdata, msg):
     if(multi_device):
         multi_tx = float(input[6])
 
+    global history_airtime
     max_throughput = throughput[nss][GI][mcs_index]
     airtime_percentage = tx / (interval * 1000000)
-    expected_throughput = max_throughput * airtime_percentage
+    if history_airtime == -1:
+        history_airtime = airtime_percentage
+    else:
+        history_airtime = alpha*airtime_percentage + (1-alpha)*history_airtime
+    expected_throughput = max_throughput * history_airtime
     if expected_throughput > bw_1080:
         video_quality = "1080p"
     else:
@@ -53,7 +59,8 @@ def on_message(client, userdata, msg):
         "quality" : video_quality
     }
     
-    #print(output)
+    print(output)
+    print(history_airtime)
     print("Current Rate: " + str((data_len * 8 / 1000000)/interval) + " Mbits/s")
     if(multi_device):
         print("Tx: " + str(tx))
