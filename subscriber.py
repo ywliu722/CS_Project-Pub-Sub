@@ -42,15 +42,30 @@ def on_message(client, userdata, msg):
     tx = float(input[5])
     if(multi_device):
         multi_tx = float(input[6])
+    else:
+        multi_tx = 0
 
     global history_airtime
     max_throughput = throughput[nss][GI][mcs_index]
     airtime_percentage = tx / (interval * 1000000)
+    multi_airtime = multi_tx / (interval * 1000000)
+
+    # check if it is the first interval
     if history_airtime == -1:
         history_airtime = airtime_percentage
     else:
+        # airtime(t) = a * measured_airtime(t) + (1-a) * airtime(t-1)
         history_airtime = alpha*airtime_percentage + (1-alpha)*history_airtime
-    expected_throughput = max_throughput * history_airtime
+    
+    # divide the left airtime to devices by the percentage of current airtime
+    if (history_airtime + multi_airtime) >=0.75 :        
+        expected_throughput = max_throughput * history_airtime
+    else:
+        left_airtime = 0.75 - (history_airtime + multi_airtime)
+        partial = history_airtime / (history_airtime + multi_airtime)
+        expected_throughput = max_throughput * (history_airtime + left_airtime * partial)
+
+    # decide the video rate
     if expected_throughput > bw_1080:
         video_quality = "1080p"
     else:
@@ -60,7 +75,8 @@ def on_message(client, userdata, msg):
     }
     
     print(output)
-    print(history_airtime)
+    print(history_airtime, multi_airtime, history_airtime+multi_airtime)
+    '''
     print("Current Rate: " + str((data_len * 8 / 1000000)/interval) + " Mbits/s")
     if(multi_device):
         print("Tx: " + str(tx))
@@ -71,6 +87,7 @@ def on_message(client, userdata, msg):
     else:
         print("Tx: " + str(tx))
         print("Tx percentage: " + str(( tx/ (interval * 1000000))*100) + "%")
+    '''
     print("-----------------------------------------------")
     
     '''
