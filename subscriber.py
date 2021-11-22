@@ -59,14 +59,14 @@ def on_message(client, userdata, msg):
     
     # divide the left airtime to devices by the percentage of current airtime
     if (history_airtime + multi_airtime) >=0.75 :        
-        expected_throughput = max_throughput * history_airtime
+        goodput = max_throughput * history_airtime
     else:
         left_airtime = 0.75 - (history_airtime + multi_airtime)
         partial = history_airtime / (history_airtime + multi_airtime)
-        expected_throughput = max_throughput * (history_airtime + left_airtime * partial)
+        goodput = max_throughput * (history_airtime + left_airtime * partial)
 
     # decide the video rate
-    if expected_throughput > bw_1080:
+    if goodput > bw_1080:
         video_quality = "1080p"
     else:
         video_quality = "720p"
