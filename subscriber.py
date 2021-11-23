@@ -76,6 +76,7 @@ def on_message(client, userdata, msg):
     
     print(output)
     print(history_airtime, multi_airtime, history_airtime+multi_airtime)
+    print(goodput)
     '''
     print("Current Rate: " + str((data_len * 8 / 1000000)/interval) + " Mbits/s")
     if(multi_device):
