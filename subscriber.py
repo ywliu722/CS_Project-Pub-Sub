@@ -12,15 +12,15 @@ bitrate["SGI"] = {"MCS0": 32.5, "MCS1": 65.0, "MCS2": 97.5, "MCS3": 130.0, "MCS4
 # throughput of each rate from experiment
 throughput = {"NSS1": {"GI": {}, "SGI": {}}, 
               "NSS2": {"GI": {}, "SGI": {}}}
-throughput["NSS1"]["GI"] = {"MCS0": 29.3, "MCS1": 58.5, "MCS2": 87.8, "MCS3": 117.0, "MCS4": 175.5,
-                            "MCS5": 234.0,"MCS6": 263.3, "MCS7": 292.5, "MCS8": 351.0, "MCS9": 390.0}
-throughput["NSS1"]["SGI"] = {"MCS0": 24.45, "MCS1": 49.45, "MCS2": 74.0, "MCS3": 96.05, "MCS4": 141.5,
-                             "MCS5": 185.5,"MCS6": 216.0, "MCS7": 240.5, "MCS8": 297.0, "MCS9": 317.5}
+throughput["NSS1"]["GI"] = {"MCS0": 24.7, "MCS1": 49.5, "MCS2": 74.75, "MCS3": 99.65, "MCS4": 147.0,
+                            "MCS5": 195.5,"MCS6": 220.0, "MCS7": 244.0, "MCS8": 298.5, "MCS9": 326.0}
+throughput["NSS1"]["SGI"] = {"MCS0": 27.4, "MCS1": 55.0, "MCS2": 82.25, "MCS3": 110.0, "MCS4": 160.5,
+                             "MCS5": 217.0,"MCS6": 244.5, "MCS7": 268.5, "MCS8": 327.0, "MCS9": 359.5}
 
-throughput["NSS2"]["GI"] = {"MCS0": 29.3, "MCS1": 58.5, "MCS2": 87.8, "MCS3": 117.0, "MCS4": 175.5,
-                            "MCS5": 234.0,"MCS6": 263.3, "MCS7": 292.5, "MCS8": 351.0, "MCS9": 390.0}
-throughput["NSS2"]["SGI"] = {"MCS0": 49.65, "MCS1": 93.7, "MCS2": 139.5, "MCS3": 192.5, "MCS4": 280.0,
-                             "MCS5": 383.0,"MCS6": 409.0, "MCS7": 452.0, "MCS8": 517.0, "MCS9": 571.0}
+throughput["NSS2"]["GI"] = {"MCS0": 47.85, "MCS1": 96.7, "MCS2": 143.0, "MCS3": 181.0, "MCS4": 260.0,
+                            "MCS5": 357.5,"MCS6": 390.5, "MCS7": 462.0, "MCS8": 537.0, "MCS9": 598.0}
+throughput["NSS2"]["SGI"] = {"MCS0": 54.25, "MCS1": 109.5, "MCS2": 161.5, "MCS3": 216.0, "MCS4": 324.0,
+                             "MCS5": 418.0,"MCS6": 458.0, "MCS7": 504.0, "MCS8": 580.5, "MCS9": 623.5}
  
 multi_device = True
 bw_1080 = 49    # required bandwidth for 1080p
