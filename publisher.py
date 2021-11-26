@@ -15,6 +15,7 @@ current_data_len = 0
 current_time = 0.0
 current_tx = 0
 current_multi_tx = 0
+current_other_tx = {}
 multi_device = True
 
 while True:
@@ -26,6 +27,8 @@ while True:
 
 		dirs = listdir('/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations')
 		multi_airtime = 0
+		other_tx = {}
+		other_station_msg = ""
 		for d in dirs:
 			if d == '08:c5:e1:f1:fc:11':
 				continue
@@ -34,6 +37,8 @@ while True:
 			input2 = input_file2.readlines()
 			input_file2.close()
 			multi_airtime += int(input2[9].split()[1])
+			other_station_msg = other_station_msg + " " + d + " " + str(int(input2[9].split()[1]) - current_other_tx[d])
+			current_other_tx[d] = int(input2[9].split()[1])
 
 		# busy waiting until reaching 1 second
 		time_now = time.time()
@@ -59,7 +64,7 @@ while True:
 
 			output = output + " " + str(time_now - current_time) + " " + str(tx - current_tx)
 			if(multi_device):
-				output = output + " " + str(multi_airtime - current_multi_tx)
+				output = output + " " + str(multi_airtime - current_multi_tx) + other_station_msg
 				current_multi_tx = multi_airtime
 			
 			mqttc.publish(topic, output)

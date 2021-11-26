@@ -27,6 +27,7 @@ bw_1080 = 49    # required bandwidth for 1080p
 bw_720 = 25     # required bandwidth for 720p
 alpha = 1/4
 history_airtime = -1
+other_history_airtime = {}
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
@@ -40,10 +41,17 @@ def on_message(client, userdata, msg):
     data_len = float(input[3])
     interval = float(input[4])
     tx = float(input[5])
+    global other_history_airtime
+    sum_other = 0
+    multi_tx = 0
     if(multi_device):
         multi_tx = float(input[6])
-    else:
-        multi_tx = 0
+        for i in range(7,len(input),2):
+            if input[i] not in other_history_airtime:
+                other_history_airtime[input[i]] = float(input[i+1]) / (interval * 1000000)
+            else:
+                other_history_airtime[input[i]] = alpha * (float(input[i+1]) / (interval * 1000000)) + (1-alpha) * other_history_airtime[input[i]]
+            sum_other += other_history_airtime[input[i]]
 
     global history_airtime
     max_throughput = throughput[nss][GI][mcs_index]
@@ -76,6 +84,7 @@ def on_message(client, userdata, msg):
     
     print(output)
     print(history_airtime, multi_airtime, history_airtime+multi_airtime)
+    print(multi_airtime, sum_other)
     print(goodput)
     '''
     print("Current Rate: " + str((data_len * 8 / 1000000)/interval) + " Mbits/s")
