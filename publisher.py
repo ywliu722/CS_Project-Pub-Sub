@@ -27,7 +27,6 @@ while True:
 
 		dirs = listdir('/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations')
 		multi_airtime = 0
-		other_tx = {}
 		other_station_msg = ""
 		for d in dirs:
 			if d == '08:c5:e1:f1:fc:11':
@@ -37,9 +36,11 @@ while True:
 			input2 = input_file2.readlines()
 			input_file2.close()
 			multi_airtime += int(input2[9].split()[1])
+			if d not in current_other_tx:
+				current_other_tx[d] = 0
 			other_station_msg = other_station_msg + " " + d + " " + str(int(input2[9].split()[1]) - current_other_tx[d])
 			current_other_tx[d] = int(input2[9].split()[1])
-
+		
 		# busy waiting until reaching 1 second
 		time_now = time.time()
 		if time_now - current_time < 1 :
