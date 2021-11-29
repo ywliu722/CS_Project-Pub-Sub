@@ -20,6 +20,11 @@ multi_device = True
 
 while True:
 	try:
+		# busy waiting until reaching 1 second
+		time_now = time.time()
+		if time_now - current_time < 1 :
+			continue
+		
 		# read device 1
 		input_file = open('/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations/08:c5:e1:f1:fc:11/stats','r')
 		input = input_file.readlines()
@@ -40,11 +45,6 @@ while True:
 				current_other_tx[d] = 0
 			other_station_msg = other_station_msg + " " + d + " " + str(int(input2[9].split()[1]) - current_other_tx[d])
 			current_other_tx[d] = int(input2[9].split()[1])
-		
-		# busy waiting until reaching 1 second
-		time_now = time.time()
-		if time_now - current_time < 1 :
-			continue
 
 		nss = input[0].split()[5]
 		mcs_index = input[0].split()[6]
