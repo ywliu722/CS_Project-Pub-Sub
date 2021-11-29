@@ -38,25 +38,23 @@ def on_message(client, userdata, msg):
     nss = input[0]
     mcs_index = input[1]
     GI = input[2]
-    data_len = float(input[3])
-    interval = float(input[4])
-    tx = float(input[5])
+    interval = float(input[3])
+    tx = float(input[4])
     global other_history_airtime
     sum_other = 0
-    multi_tx = 0
     if(multi_device):
-        multi_tx = float(input[6])
-        for i in range(7,len(input),2):
+        for i in range(5,len(input),2):
+            # check if the device is connected for the first time
             if input[i] not in other_history_airtime:
                 other_history_airtime[input[i]] = float(input[i+1]) / (interval * 1000000)
             else:
                 other_history_airtime[input[i]] = alpha * (float(input[i+1]) / (interval * 1000000)) + (1-alpha) * other_history_airtime[input[i]]
+            # sum up all the other devices' moving average of airtime percentage
             sum_other += other_history_airtime[input[i]]
 
     global history_airtime
     max_throughput = throughput[nss][GI][mcs_index]
     airtime_percentage = tx / (interval * 1000000)
-    multi_airtime = multi_tx / (interval * 1000000)
 
     # check if it is the first interval
     if history_airtime == -1:
@@ -66,11 +64,11 @@ def on_message(client, userdata, msg):
         history_airtime = alpha*airtime_percentage + (1-alpha)*history_airtime
     
     # divide the left airtime to devices by the percentage of current airtime
-    if (history_airtime + multi_airtime) >=0.75 :        
+    if (history_airtime + sum_other) >=0.75 :        
         goodput = max_throughput * history_airtime
     else:
-        left_airtime = 0.75 - (history_airtime + multi_airtime)
-        partial = history_airtime / (history_airtime + multi_airtime)
+        left_airtime = 0.75 - (history_airtime + sum_other)
+        partial = history_airtime / (history_airtime + sum_other)
         goodput = max_throughput * (history_airtime + left_airtime * partial)
 
     # decide the video rate
@@ -83,41 +81,25 @@ def on_message(client, userdata, msg):
     }
     
     print(output)
-    print(history_airtime, multi_airtime, history_airtime+multi_airtime)
-    print(multi_airtime, sum_other)
+    print(history_airtime, sum_other, history_airtime+sum_other)
     print(goodput)
-    '''
-    print("Current Rate: " + str((data_len * 8 / 1000000)/interval) + " Mbits/s")
-    if(multi_device):
-        print("Tx: " + str(tx))
-        print("Tx percentage: " + str(( tx/ (interval * 1000000))*100) + "%")
-        print("Tx_2: " + str(multi_tx))
-        print("Tx_2 percentage: " + str(( multi_tx/ (interval * 1000000))*100) + "%")
-        print("Tx_total percentage: " + str(( (tx + multi_tx)/ (interval * 1000000))*100) + "%")
-    else:
-        print("Tx: " + str(tx))
-        print("Tx percentage: " + str(( tx/ (interval * 1000000))*100) + "%")
-    '''
     print("-----------------------------------------------")
     
-    '''
+    # output the quality
     try:
-        input_file = open ('output.json','r')
+        input_file = open ('/home/ywliu722/LinusTrinus/test.json','r')
         json_array = json.load(input_file)
         input_file.close()
         current_quality = json_array['quality']
         if current_quality != video_quality:
-            output_file = open("output.json","w")
+            output_file = open("/home/ywliu722/LinusTrinus/test.json","w")
             json.dump(output, output_file)
             output_file.close()
-            print(output)
     except:
         pass
-    '''
-    
 
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("192.168.1.148", 1883, 60)
+client.connect("192.168.1.238", 1883, 60)
 client.loop_forever()
