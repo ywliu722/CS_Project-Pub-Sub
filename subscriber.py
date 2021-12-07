@@ -24,6 +24,7 @@ throughput["NSS2"]["SGI"] = {"MCS0": 54.25, "MCS1": 109.5, "MCS2": 161.5, "MCS3"
  
 multi_device = True
 bw_1080 = 49    # required bandwidth for 1080p
+bw_900 = 33     # required bandwidth for 900p
 bw_720 = 25     # required bandwidth for 720p
 bw_540 = 10     # required bandwidth for 540p
 bw_360 = 2.5    # required bandwidth for 360p
@@ -76,12 +77,13 @@ def on_message(client, userdata, msg):
     # decide the video rate
     if goodput > bw_1080:
         video_quality = "1080p"
+    elif goodput > bw_900:
+        video_quality = "900p"
     elif goodput > bw_720:
         video_quality = "720p"
-    elif goodput > bw_540:
-        video_quality = "540p"
     else:
-        video_quality = "360p"
+        video_quality = "540p"
+
     output = {
         "quality" : video_quality
     }
