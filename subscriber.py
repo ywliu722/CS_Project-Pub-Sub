@@ -74,17 +74,26 @@ def on_message(client, userdata, msg):
     # decide the video rate
     if goodput > bw_1080:
         video_quality = "1080p"
-    else:
+    elif goodput > bw_720:
         video_quality = "720p"
+    else:
+        video_quality = "480p"
     output = {
         "quality" : video_quality
     }
     
+    '''
+    output_data=open('output.txt', 'a')
+    output_data.write(f'{nss} {mcs_index} {GI} {history_airtime} {sum_other} {video_quality}\n')
+    print(f'{nss} {mcs_index} {GI} {history_airtime} {sum_other} {video_quality}')
+    '''
+
     print(output)
     print(history_airtime, sum_other, history_airtime+sum_other)
     print(goodput)
     print("-----------------------------------------------")
-    
+
+
     # output the quality
     try:
         input_file = open ('/home/ywliu722/LinusTrinus/test.json','r')
