@@ -45,8 +45,13 @@ def on_message(client, userdata, msg):
     tx = float(input[4])
     global other_history_airtime
     sum_other = 0
+    other=[]
+    n_device = 1 + (len(input) - 5)/2
     if(multi_device):
         for i in range(5,len(input),2):
+            # check the value is correct or not
+            if float(input[i+1]) / (interval * 1000000) < 0 or float(input[i+1]) / (interval * 1000000) > 1:
+                continue
             # check if the device is connected for the first time
             if input[i] not in other_history_airtime:
                 other_history_airtime[input[i]] = float(input[i+1]) / (interval * 1000000)
@@ -54,6 +59,7 @@ def on_message(client, userdata, msg):
                 other_history_airtime[input[i]] = alpha * (float(input[i+1]) / (interval * 1000000)) + (1-alpha) * other_history_airtime[input[i]]
             # sum up all the other devices' moving average of airtime percentage
             sum_other += other_history_airtime[input[i]]
+            other.append(other_history_airtime[input[i]])
 
     global history_airtime
     max_throughput = throughput[nss][GI][mcs_index]
@@ -69,10 +75,19 @@ def on_message(client, userdata, msg):
     # divide the left airtime to devices by the percentage of current airtime
     if (history_airtime + sum_other) >=0.75 :        
         goodput = max_throughput * history_airtime
+
+    # other devices use exceeded to their fairness part
+    elif sum_other > 0.75 * ( ( n_device -1 ) / n_device):
+        goodput = max_throughput * 0.75*(1/n_device) # make sure that we get the best quality
     else:
-        left_airtime = 0.75 - (history_airtime + sum_other)
-        partial = history_airtime / (history_airtime + sum_other)
-        goodput = max_throughput * (history_airtime + left_airtime * partial)
+        exceed = 0
+        for air in other:
+            if air > 0.75 * (1/n_device):
+                exceed += air
+        exceed += history_airtime
+        # distribute the left airtime to those devices that use airtime exceeded their fairness part
+        goodput = max_throughput * ( 0.75*(1/n_device) + (0.75-sum_other)*(history_airtime/exceed) )
+
 
     # decide the video rate
     if goodput > bw_1080:
@@ -95,6 +110,7 @@ def on_message(client, userdata, msg):
     '''
 
     print(output)
+    print(n_device)
     print(history_airtime, sum_other, history_airtime+sum_other)
     print(goodput)
     print("-----------------------------------------------")
