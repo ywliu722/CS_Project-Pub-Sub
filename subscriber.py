@@ -78,7 +78,7 @@ def on_message(client, userdata, msg):
 
     # other devices use exceeded to their fairness part
     elif sum_other > 0.75 * ( ( n_device -1 ) / n_device):
-        goodput = max_throughput * 0.75*(1/n_device) # make sure that we get the best quality
+        goodput = max_throughput * (0.75-sum_other) # make sure that we get the best quality
     else:
         exceed = 0
         for air in other:
