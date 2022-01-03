@@ -10,7 +10,6 @@ topic = "TESTING"
 mqttc = mqtt.Client("python_pub")
 mqttc.connect(serviceIP, servicePort)
 
-current_msec = "0"
 current_time = 0.0
 current_tx = 0
 current_other_tx = {}
@@ -56,23 +55,20 @@ while True:
 			GI = True
 		else:
 			GI = False
-		msec = input[7].split()[1]
 		tx = int(input[9].split()[1])
 		
-		if msec != current_msec:
-			if GI:
-				output = nss + " " + mcs_index + " SGI"
-			else:
-				output = nss + " " + mcs_index + " GI"
+		if GI:
+			output = nss + " " + mcs_index + " SGI"
+		else:
+			output = nss + " " + mcs_index + " GI"
 
-			output = output + " " + str(time_now - current_time) + " " + str(tx - current_tx)
-			if(multi_device):
-				output = output + other_station_msg
-			
-			mqttc.publish(topic, output)
-			current_time = time_now
-			current_msec = msec
-			current_tx = tx
-			print(output)
+		output = output + " " + str(time_now - current_time) + " " + str(tx - current_tx)
+		if(multi_device):
+			output = output + other_station_msg
+		
+		mqttc.publish(topic, output)
+		current_time = time_now
+		current_tx = tx
+		print(output)
 	except:
 		continue

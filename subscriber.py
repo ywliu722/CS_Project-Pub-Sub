@@ -46,6 +46,8 @@ def on_message(client, userdata, msg):
     global other_history_airtime
     sum_other = 0
     other=[]
+    airtime_list="" # every airtime percentage
+    moving_airtime_list=""
     n_device = 1 + (len(input) - 5)/2
     if(multi_device):
         for i in range(5,len(input),2):
@@ -60,11 +62,13 @@ def on_message(client, userdata, msg):
             # sum up all the other devices' moving average of airtime percentage
             sum_other += other_history_airtime[input[i]]
             other.append(other_history_airtime[input[i]])
+            airtime_list = airtime_list + " " + str(float(input[i+1]) / (interval * 1000000)) # every airtime percentage
+            moving_airtime_list = moving_airtime_list + " " + str(other_history_airtime[input[i]]) # every moving average of airtime percentage
 
     global history_airtime
     max_throughput = throughput[nss][GI][mcs_index]
     airtime_percentage = tx / (interval * 1000000)
-
+    airtime_list = str(airtime_percentage) + airtime_list # every airtime percentage
     # check if it is the first interval
     if history_airtime == -1:
         history_airtime = airtime_percentage
@@ -72,6 +76,8 @@ def on_message(client, userdata, msg):
         # airtime(t) = a * measured_airtime(t) + (1-a) * airtime(t-1)
         history_airtime = alpha*airtime_percentage + (1-alpha)*history_airtime
     
+    moving_airtime_list = str(history_airtime) + moving_airtime_list # every airtime percentage
+
     # divide the left airtime to devices by the percentage of current airtime
     if (history_airtime + sum_other) >=0.75 :        
         goodput = max_throughput * history_airtime
@@ -103,6 +109,17 @@ def on_message(client, userdata, msg):
         "quality" : video_quality
     }
     
+    
+    # for output airtime
+    output_airtime=open('airtime.txt', 'a')
+    output_airtime.write(f'{video_quality} {airtime_list}\n')
+    output_airtime.close()
+
+    output_moving = open('moving.txt', 'a')
+    output_moving.write(f'{video_quality} {moving_airtime_list}\n')
+    output_moving.close()
+    
+
     '''
     output_data=open('output.txt', 'a')
     output_data.write(f'{nss} {mcs_index} {GI} {history_airtime} {sum_other} {video_quality}\n')
@@ -115,9 +132,10 @@ def on_message(client, userdata, msg):
     print(goodput)
     print("-----------------------------------------------")
 
-
+    
     # output the quality
     try:
+        
         input_file = open ('/home/ywliu722/LinusTrinus/test.json','r')
         json_array = json.load(input_file)
         input_file.close()
@@ -126,8 +144,10 @@ def on_message(client, userdata, msg):
             output_file = open("/home/ywliu722/LinusTrinus/test.json","w")
             json.dump(output, output_file)
             output_file.close()
+        
     except:
         pass
+    
 
 client = mqtt.Client()
 client.on_connect = on_connect
