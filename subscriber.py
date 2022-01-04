@@ -15,10 +15,10 @@ throughput["NSS2"]["SGI"] = {"MCS0": 54.25, "MCS1": 109.5, "MCS2": 161.5, "MCS3"
                              "MCS5": 418.0,"MCS6": 458.0, "MCS7": 504.0, "MCS8": 580.5, "MCS9": 623.5}
  
 multi_device = True
-bw_1080 = 20    # required bandwidth for 1080p
-bw_900 = 15     # required bandwidth for 900p
-bw_720 = 10     # required bandwidth for 720p
-bw_540 = 6     # required bandwidth for 540p
+bw_1080 = 25    # required bandwidth for 1080p
+bw_900 = 18     # required bandwidth for 900p
+bw_720 = 12     # required bandwidth for 720p
+bw_540 = 8     # required bandwidth for 540p
 #bw_360 = 2.5    # required bandwidth for 360p
 alpha = 1/4
 history_airtime = -1
@@ -131,7 +131,7 @@ def on_message(client, userdata, msg):
     
     # output the quality
     try:
-        '''
+        
         input_file = open ('/home/ywliu722/LinusTrinus/test.json','r')
         json_array = json.load(input_file)
         input_file.close()
@@ -140,7 +140,7 @@ def on_message(client, userdata, msg):
             output_file = open("/home/ywliu722/LinusTrinus/test.json","w")
             json.dump(output, output_file)
             output_file.close()
-        '''
+        
     except:
         pass
     
