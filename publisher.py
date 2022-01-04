@@ -71,6 +71,7 @@ while True:
 			output = output + other_station_msg
 		
 		mqttc.publish(topic, output)
+		current_data_len = data_len
 		current_time = time_now
 		current_tx = tx
 		print(output)

@@ -1,14 +1,6 @@
 import json
 import paho.mqtt.client as mqtt
 
-'''
-bitrate= {"GI": {}, "SGI": {}}
-bitrate["GI"] = {"MCS0": 29.3, "MCS1": 58.5, "MCS2": 87.8, "MCS3": 117.0, "MCS4": 175.5,
-                         "MCS5": 234.0,"MCS6": 263.3, "MCS7": 292.5, "MCS8": 351.0, "MCS9": 390.0}
-bitrate["SGI"] = {"MCS0": 32.5, "MCS1": 65.0, "MCS2": 97.5, "MCS3": 130.0, "MCS4": 195.0,
-                         "MCS5": 260.0,"MCS6": 292.5, "MCS7": 325.0, "MCS8": 390.0, "MCS9": 433.3}
-'''
-
 # throughput of each rate from experiment
 throughput = {"NSS1": {"GI": {}, "SGI": {}}, 
               "NSS2": {"GI": {}, "SGI": {}}}
@@ -23,11 +15,11 @@ throughput["NSS2"]["SGI"] = {"MCS0": 54.25, "MCS1": 109.5, "MCS2": 161.5, "MCS3"
                              "MCS5": 418.0,"MCS6": 458.0, "MCS7": 504.0, "MCS8": 580.5, "MCS9": 623.5}
  
 multi_device = True
-bw_1080 = 49    # required bandwidth for 1080p
-bw_900 = 33     # required bandwidth for 900p
-bw_720 = 25     # required bandwidth for 720p
-bw_540 = 10     # required bandwidth for 540p
-bw_360 = 2.5    # required bandwidth for 360p
+bw_1080 = 20    # required bandwidth for 1080p
+bw_900 = 15     # required bandwidth for 900p
+bw_720 = 10     # required bandwidth for 720p
+bw_540 = 6     # required bandwidth for 540p
+#bw_360 = 2.5    # required bandwidth for 360p
 alpha = 1/4
 history_airtime = -1
 other_history_airtime = {}
@@ -49,7 +41,7 @@ def on_message(client, userdata, msg):
     other=[]
     airtime_list="" # every airtime percentage
     moving_airtime_list=""
-    n_device = 1 + (len(input) - 5)/2
+    n_device = 1 + (len(input) - 6)/2
     if(multi_device):
         for i in range(6,len(input),2):
             # check the value is correct or not
@@ -139,7 +131,7 @@ def on_message(client, userdata, msg):
     
     # output the quality
     try:
-        
+        '''
         input_file = open ('/home/ywliu722/LinusTrinus/test.json','r')
         json_array = json.load(input_file)
         input_file.close()
@@ -148,7 +140,7 @@ def on_message(client, userdata, msg):
             output_file = open("/home/ywliu722/LinusTrinus/test.json","w")
             json.dump(output, output_file)
             output_file.close()
-        
+        '''
     except:
         pass
     
