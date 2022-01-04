@@ -41,8 +41,9 @@ def on_message(client, userdata, msg):
     nss = input[0]
     mcs_index = input[1]
     GI = input[2]
-    interval = float(input[3])
-    tx = float(input[4])
+    data_len = float(input[3])
+    interval = float(input[4])
+    tx = float(input[5])
     global other_history_airtime
     sum_other = 0
     other=[]
@@ -50,7 +51,7 @@ def on_message(client, userdata, msg):
     moving_airtime_list=""
     n_device = 1 + (len(input) - 5)/2
     if(multi_device):
-        for i in range(5,len(input),2):
+        for i in range(6,len(input),2):
             # check the value is correct or not
             if float(input[i+1]) / (interval * 1000000) < 0 or float(input[i+1]) / (interval * 1000000) > 1:
                 continue
@@ -64,6 +65,8 @@ def on_message(client, userdata, msg):
             other.append(other_history_airtime[input[i]])
             airtime_list = airtime_list + " " + str(float(input[i+1]) / (interval * 1000000)) # every airtime percentage
             moving_airtime_list = moving_airtime_list + " " + str(other_history_airtime[input[i]]) # every moving average of airtime percentage
+
+    current_throughput = (data_len * 8 / 1000000) / interval
 
     global history_airtime
     max_throughput = throughput[nss][GI][mcs_index]
@@ -112,11 +115,11 @@ def on_message(client, userdata, msg):
     
     # for output airtime
     output_airtime=open('airtime.txt', 'a')
-    output_airtime.write(f'{video_quality} {airtime_list}\n')
+    output_airtime.write(f'{video_quality} {airtime_list} {current_throughput}M\n')
     output_airtime.close()
 
     output_moving = open('moving.txt', 'a')
-    output_moving.write(f'{video_quality} {moving_airtime_list}\n')
+    output_moving.write(f'{video_quality} {moving_airtime_list} {current_throughput}M\n')
     output_moving.close()
     
 
@@ -128,6 +131,7 @@ def on_message(client, userdata, msg):
 
     print(output)
     print(n_device)
+    print(current_throughput)
     print(history_airtime, sum_other, history_airtime+sum_other)
     print(goodput)
     print("-----------------------------------------------")
