@@ -15,11 +15,11 @@ throughput["NSS2"]["SGI"] = {"MCS0": 54.25, "MCS1": 109.5, "MCS2": 161.5, "MCS3"
                              "MCS5": 418.0,"MCS6": 458.0, "MCS7": 504.0, "MCS8": 580.5, "MCS9": 623.5}
  
 multi_device = True
-bw_1080 = 25    # required bandwidth for 1080p
-bw_900 = 18     # required bandwidth for 900p
-bw_720 = 12     # required bandwidth for 720p
-bw_540 = 8     # required bandwidth for 540p
-#bw_360 = 2.5    # required bandwidth for 360p
+bw_1080 = 62    # required bandwidth for 1080p
+bw_900 = 51     # required bandwidth for 900p
+bw_720 = 34     # required bandwidth for 720p
+bw_540 = 19     # required bandwidth for 540p
+bw_360 = 9    # required bandwidth for 360p
 alpha = 1/4
 history_airtime = -1
 other_history_airtime = {}
@@ -97,8 +97,10 @@ def on_message(client, userdata, msg):
         video_quality = "900p"
     elif goodput > bw_720:
         video_quality = "720p"
-    else:
+    elif goodput > bw_540:
         video_quality = "540p"
+    else:
+        video_quality = "360p"
 
     output = {
         "quality" : video_quality
@@ -107,19 +109,19 @@ def on_message(client, userdata, msg):
     
     # for output airtime
     output_airtime=open('airtime.txt', 'a')
-    output_airtime.write(f'{video_quality} {airtime_list} {current_throughput}M\n')
+    output_airtime.write(f'{video_quality} {airtime_list}\n')
     output_airtime.close()
 
+    '''
     output_moving = open('moving.txt', 'a')
-    output_moving.write(f'{video_quality} {moving_airtime_list} {current_throughput}M\n')
+    output_moving.write(f'{video_quality} {moving_airtime_list}\n')
     output_moving.close()
-    
+    '''
 
-    '''
-    output_data=open('output.txt', 'a')
-    output_data.write(f'{nss} {mcs_index} {GI} {history_airtime} {sum_other} {video_quality}\n')
-    print(f'{nss} {mcs_index} {GI} {history_airtime} {sum_other} {video_quality}')
-    '''
+    output_throughput = open('throughput.txt', 'a')
+    output_throughput.write(f'{video_quality} {current_throughput}\n')
+    output_throughput.close()
+
 
     print(output)
     print(n_device)
