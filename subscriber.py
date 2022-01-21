@@ -1,6 +1,19 @@
 import json
 import paho.mqtt.client as mqtt
 
+# theoratical bitrate of each rate
+bitrate = {"NSS1": {"GI": {}, "SGI": {}}, 
+              "NSS2": {"GI": {}, "SGI": {}}}
+bitrate["NSS1"]["GI"] = {"MCS0": 29.3, "MCS1": 58.5, "MCS2": 87.8, "MCS3": 117.0, "MCS4": 175.5,
+                            "MCS5": 234.0,"MCS6": 263.3, "MCS7": 292.5, "MCS8": 351.0, "MCS9": 390}
+bitrate["NSS1"]["SGI"] = {"MCS0": 32.5, "MCS1": 65.0, "MCS2": 97.5, "MCS3": 130.0, "MCS4": 195.0,
+                             "MCS5": 260.0,"MCS6": 292.5, "MCS7": 325.0, "MCS8": 390.0, "MCS9": 433.3}
+
+bitrate["NSS2"]["GI"] = {"MCS0": 58.5, "MCS1": 117.0, "MCS2": 175.5, "MCS3": 234.0, "MCS4":351.0,
+                            "MCS5": 468.0,"MCS6": 526.5, "MCS7": 585.0, "MCS8": 702.0, "MCS9": 780.0}
+bitrate["NSS2"]["SGI"] = {"MCS0": 65.0, "MCS1": 130.0, "MCS2": 195.0, "MCS3": 260.0, "MCS4": 390.0,
+                             "MCS5": 520.0,"MCS6": 585.0, "MCS7": 650.0, "MCS8": 780.0, "MCS9": 866.7}
+
 # throughput of each rate from experiment
 throughput = {"NSS1": {"GI": {}, "SGI": {}}, 
               "NSS2": {"GI": {}, "SGI": {}}}
@@ -18,8 +31,8 @@ multi_device = True
 bw_1080 = 62    # required bandwidth for 1080p
 bw_900 = 51     # required bandwidth for 900p
 bw_720 = 34     # required bandwidth for 720p
-bw_540 = 19     # required bandwidth for 540p
-bw_360 = 9    # required bandwidth for 360p
+bw_540 = 28     # required bandwidth for 540p
+bw_360 = 14    # required bandwidth for 360p
 alpha = 1/4
 history_airtime = -1
 other_history_airtime = {}
@@ -109,7 +122,7 @@ def on_message(client, userdata, msg):
     
     # for output airtime
     output_airtime=open('airtime.txt', 'a')
-    output_airtime.write(f'{video_quality} {airtime_list}\n')
+    output_airtime.write(f'{video_quality} {bitrate[nss][GI][mcs_index]} {airtime_list}\n')
     output_airtime.close()
 
     '''
@@ -133,7 +146,7 @@ def on_message(client, userdata, msg):
     
     # output the quality
     try:
-        
+        '''
         input_file = open ('/home/ywliu722/LinusTrinus/test.json','r')
         json_array = json.load(input_file)
         input_file.close()
@@ -142,7 +155,7 @@ def on_message(client, userdata, msg):
             output_file = open("/home/ywliu722/LinusTrinus/test.json","w")
             json.dump(output, output_file)
             output_file.close()
-        
+        '''
     except:
         pass
     
