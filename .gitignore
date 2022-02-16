@@ -1,5 +1,6 @@
 *
 !subscriber.py
 !publisher.py
+!pcap_parsing.py
 !.gitignore
 !README.md
