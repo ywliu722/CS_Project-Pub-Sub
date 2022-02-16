@@ -1,9 +1,11 @@
 '''
 This script is mainly used to parsing the pcap file output to get the fps of each time interval.
 
-First, we get the pcap file output using: $tcpdump -r <pcap_file> -ttttt tcp port 7777 > <tcpdump_output>
+First, we get the pcap file output using: $tcpdump -r <pcap_file> -ttttt tcp port 7777 > <tcpdump_output>,
+or we can just get the output rather than store the pcap file first.
 -ttttt argument for timestamp using delta between each packet and the first packet
 tcp port 7777 argument for VR client side port
+
 
 Then, using this script to get the fps in each time interval.
 Usage: $python3 pcap_parsing <tcpdump_output> <fps_output>

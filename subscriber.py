@@ -34,6 +34,7 @@ bw_720 = 30     # required bandwidth for 720p
 bw_540 = 20     # required bandwidth for 540p
 bw_360 = 10    # required bandwidth for 360p
 alpha = 1/4
+max_airtime = 0.7
 history_airtime = -1
 other_history_airtime = {}
 
@@ -87,20 +88,20 @@ def on_message(client, userdata, msg):
     moving_airtime_list = str(history_airtime) + moving_airtime_list # every airtime percentage
 
     # divide the left airtime to devices by the percentage of current airtime
-    if (history_airtime + sum_other) >=0.75 :        
+    if (history_airtime + sum_other) >= max_airtime :        
         goodput = max_throughput * history_airtime
 
     # other devices use exceeded to their fairness part
-    elif sum_other > 0.75 * ( ( n_device -1 ) / n_device):
-        goodput = max_throughput * (0.75-sum_other) # make sure that we get the best quality
+    elif sum_other > max_airtime * ( ( n_device -1 ) / n_device):
+        goodput = max_throughput * ( max_airtime -sum_other) # make sure that we get the best quality
     else:
         exceed = 0
         for air in other:
-            if air > 0.75 * (1/n_device):
+            if air > max_airtime * (1/n_device):
                 exceed += air
         exceed += history_airtime
         # distribute the left airtime to those devices that use airtime exceeded their fairness part
-        goodput = max_throughput * ( 0.75*(1/n_device) + (0.75-sum_other)*(history_airtime/exceed) )
+        goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other)*(history_airtime/exceed) )
 
 
     # decide the video rate
