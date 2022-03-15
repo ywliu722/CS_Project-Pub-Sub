@@ -24,7 +24,7 @@ while True:
 			continue
 
 		# read device 1
-		input_file = open('/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations/08:c5:e1:f1:fc:11/stats','r')
+		input_file = open('/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations/de:cc:1e:23:fe:98/stats','r')
 		input = input_file.readlines()
 		input_file.close()
 
@@ -32,7 +32,7 @@ while True:
 		other_station_msg = ""
 		for d in dirs:
 			# check if the current station is device 1 or not
-			if d == '08:c5:e1:f1:fc:11':
+			if d == 'de:cc:1e:23:fe:98':
 				continue
 
 			# read device stats
