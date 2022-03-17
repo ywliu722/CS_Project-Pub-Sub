@@ -3,7 +3,7 @@ from os import listdir, path
 import time
 import paho.mqtt.client as mqtt
 
-serviceIP = "192.168.1.238"
+serviceIP = "192.168.1.140"
 servicePort = 1883
 topic = "TESTING"
 

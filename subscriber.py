@@ -38,6 +38,8 @@ max_airtime = 0.65
 history_airtime = -1
 other_history_airtime = {}
 
+output_path = '/home/nems/yw/CS_Project-Linux_Trinus/test.json'
+
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     client.subscribe("TESTING")
@@ -148,12 +150,12 @@ def on_message(client, userdata, msg):
     # output the quality
     try:
         '''
-        input_file = open ('/home/ywliu722/LinusTrinus/test.json','r')
+        input_file = open (output_path,'r')
         json_array = json.load(input_file)
         input_file.close()
         current_quality = json_array['quality']
         if current_quality != video_quality:
-            output_file = open("/home/ywliu722/LinusTrinus/test.json","w")
+            output_file = open(output_path,"w")
             json.dump(output, output_file)
             output_file.close()
         '''
@@ -164,5 +166,5 @@ def on_message(client, userdata, msg):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("192.168.1.238", 1883, 60)
+client.connect("192.168.1.140", 1883, 60)
 client.loop_forever()
