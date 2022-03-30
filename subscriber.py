@@ -103,7 +103,10 @@ def on_message(client, userdata, msg):
                 exceed += air
         exceed += history_airtime
         # distribute the left airtime to those devices that use airtime exceeded their fairness part
-        goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other)*(history_airtime/exceed) )
+        if exceed == 0:
+        	goodput = max_throughput * ( max_airtime * (1/n_device) )
+        else:
+        	goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other)*(history_airtime/exceed) )
 
 
     # decide the video rate
@@ -149,7 +152,7 @@ def on_message(client, userdata, msg):
     
     # output the quality
     try:
-        '''
+        
         input_file = open (output_path,'r')
         json_array = json.load(input_file)
         input_file.close()
@@ -158,7 +161,7 @@ def on_message(client, userdata, msg):
             output_file = open(output_path,"w")
             json.dump(output, output_file)
             output_file.close()
-        '''
+        
     except:
         pass
     
