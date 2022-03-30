@@ -104,10 +104,9 @@ def on_message(client, userdata, msg):
         exceed += history_airtime
         # distribute the left airtime to those devices that use airtime exceeded their fairness part
         if exceed == 0:
-        	goodput = max_throughput * ( max_airtime * (1/n_device) )
+            goodput = max_throughput * ( max_airtime * (1/n_device) )
         else:
-        	goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other)*(history_airtime/exceed) )
-
+            goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other)*(history_airtime/exceed) )
 
     # decide the video rate
     if goodput > bw_1080:
