@@ -34,7 +34,7 @@ bw_720 = 30     # required bandwidth for 720p
 bw_540 = 20     # required bandwidth for 540p
 bw_360 = 10    # required bandwidth for 360p
 alpha = 1/2
-max_airtime = 0.65
+max_airtime = 0.6
 history_airtime = -1
 other_history_airtime = {}
 
