@@ -91,22 +91,23 @@ def on_message(client, userdata, msg):
 
     # divide the left airtime to devices by the percentage of current airtime
     if (history_airtime + sum_other) >= max_airtime :        
-        goodput = max_throughput * history_airtime
+        goodput = max_throughput * ( max_airtime - sum_other)
 
     # other devices use exceeded to their fairness part
     elif sum_other > max_airtime * ( ( n_device -1 ) / n_device):
-        goodput = max_throughput * ( max_airtime -sum_other) # make sure that we get the best quality
+        goodput = max_throughput * ( max_airtime - sum_other) # make sure that we get the best quality
     else:
         exceed = 0
         for air in other:
             if air > max_airtime * (1/n_device):
                 exceed += air
-        exceed += history_airtime
+        if history_airtime > max_airtime * (1/n_device):
+            exceed += history_airtime
         # distribute the left airtime to those devices that use airtime exceeded their fairness part
-        if exceed == 0:
-            goodput = max_throughput * ( max_airtime * (1/n_device) )
-        else:
-            goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other)*(history_airtime/exceed) )
+        if exceed == 0: # if there is no device exceeds their own fairness part, then every device get the same airtime
+            goodput = max_throughput * ( max_airtime * (1/n_device))
+        else:   # if there is any device exceeds the fairness part, then evenly distribute the last airtime to those exceeded devices
+            goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other - history_airtime)*(history_airtime/exceed) )
 
     # decide the video rate
     if goodput > bw_1080:
