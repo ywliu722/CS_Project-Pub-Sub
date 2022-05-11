@@ -38,6 +38,9 @@ max_airtime = 0.6
 history_airtime = -1
 other_history_airtime = {}
 
+current_require_bw = 60
+startup = True
+
 output_path = '/home/nems/yw/CS_Project-Linux_Trinus/test.json'
 
 def on_connect(client, userdata, flags, rc):
@@ -45,6 +48,11 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("TESTING")
 
 def on_message(client, userdata, msg):
+    global history_airtime
+    global other_history_airtime
+    global max_airtime
+
+    # parsing the received message
     input = msg.payload.decode().split()
     nss = input[0]
     mcs_index = input[1]
@@ -52,7 +60,8 @@ def on_message(client, userdata, msg):
     data_len = float(input[3])
     interval = float(input[4])
     tx = float(input[5])
-    global other_history_airtime
+    
+    total_airtime = 0.0
     sum_other = 0
     other=[]
     airtime_list="" # every airtime percentage
@@ -63,6 +72,10 @@ def on_message(client, userdata, msg):
             # check the value is correct or not
             if float(input[i+1]) / (interval * 1000000) < 0 or float(input[i+1]) / (interval * 1000000) > 1:
                 continue
+
+            # sum up the total used airtime
+            total_airtime += (float(input[i+1]) / (interval * 1000000))
+
             # check if the device is connected for the first time
             if input[i] not in other_history_airtime:
                 other_history_airtime[input[i]] = float(input[i+1]) / (interval * 1000000)
@@ -76,9 +89,10 @@ def on_message(client, userdata, msg):
 
     current_throughput = (data_len * 8 / 1000000) / interval
 
-    global history_airtime
+    
     max_throughput = throughput[nss][GI][mcs_index]
     airtime_percentage = tx / (interval * 1000000)
+    total_airtime += airtime_percentage
     airtime_list = str(airtime_percentage) + airtime_list # every airtime percentage
     # check if it is the first interval
     if history_airtime == -1:
@@ -109,17 +123,36 @@ def on_message(client, userdata, msg):
         else:   # if there is any device exceeds the fairness part, then evenly distribute the last airtime to those exceeded devices
             goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other - history_airtime)*(history_airtime/exceed) )
 
+    # modify the quality to lower one if the current throughput does not meet the requirement
+    if current_throughput < current_require_bw * 0.85 and not startup:
+        goodput = current_throughput
+        max_airtime = total_airtime
+
+    # if the current throughput meets the requirement and if the total used airtime is more than max_airtime, then let the total airtime be the max_airtime
+    # this might need some modification
+    ## [TODO]
+    elif current_throughput > current_require_bw * 0.85 and total_airtime > max_airtime:
+        max_airtime = total_airtime
+
+    if startup:
+        startup = False
+
     # decide the video rate
     if goodput > bw_1080:
         video_quality = "1080p"
+        current_require_bw = bw_1080
     elif goodput > bw_900:
         video_quality = "900p"
+        current_require_bw = bw_900
     elif goodput > bw_720:
         video_quality = "720p"
+        current_require_bw = bw_720
     elif goodput > bw_540:
         video_quality = "540p"
+        current_require_bw = bw_540
     else:
         video_quality = "360p"
+        current_require_bw = bw_720
 
     output = {
         "quality" : video_quality
@@ -142,11 +175,12 @@ def on_message(client, userdata, msg):
     output_throughput.close()
 
 
-    print(output)
-    print(n_device)
-    print(current_throughput)
+    print(output)    
     print(history_airtime, sum_other, history_airtime+sum_other)
-    print(goodput)
+    print(f'Total used airtime: {total_airtime}')
+    print(f'Maximum airtime: {max_airtime}')
+    print(f'Current throughput: {current_throughput}')
+    print(f'Goodput: {goodput}')
     print("-----------------------------------------------")
 
     
