@@ -126,7 +126,7 @@ def on_message(client, userdata, msg):
             goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other - history_airtime)*(history_airtime/exceed) )
 
     # modify the quality to lower one if the current throughput does not meet the requirement
-    if current_throughput < current_require_bw * 0.85 and not startup:
+    if current_throughput < current_require_bw * 0.85 and not startup and max_airtime > 0.6:
         goodput = current_throughput
         max_airtime = total_airtime
 
