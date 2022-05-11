@@ -52,6 +52,7 @@ def on_message(client, userdata, msg):
     global other_history_airtime
     global max_airtime
     global current_require_bw
+    global startup
 
     # parsing the received message
     input = msg.payload.decode().split()
