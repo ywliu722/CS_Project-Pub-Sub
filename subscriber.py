@@ -134,7 +134,7 @@ def on_message(client, userdata, msg):
     elif current_throughput > current_require_bw * 0.85 and total_airtime > max_airtime:
         max_airtime = total_airtime
 
-    if startup:
+    if startup and current_throughput > 1.0:
         startup = False
 
     # decide the video rate
