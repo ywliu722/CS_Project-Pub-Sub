@@ -35,6 +35,7 @@ bw_540 = 20     # required bandwidth for 540p
 bw_360 = 10    # required bandwidth for 360p
 alpha = 1/2
 max_airtime = 0.6
+min_airtime = 0.4
 history_airtime = -1
 other_history_airtime = {}
 
@@ -129,7 +130,7 @@ def on_message(client, userdata, msg):
 
     # modify the quality to lower one if the current throughput does not meet the requirement
     # if current_throughput < current_require_bw * 0.9 and not startup and total_airtime > 0.5:
-    if current_throughput < current_require_bw * bw_meet_threshold and not startup:
+    if current_throughput < current_require_bw * bw_meet_threshold and not startup and total_airtime > min_airtime:
         goodput = current_throughput
         max_airtime = total_airtime
 
