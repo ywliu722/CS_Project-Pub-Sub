@@ -126,7 +126,7 @@ def on_message(client, userdata, msg):
             goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other - history_airtime)*(history_airtime/exceed) )
 
     # modify the quality to lower one if the current throughput does not meet the requirement
-    if current_throughput < current_require_bw * 0.85 and not startup and total_airtime > 0.6:
+    if current_throughput < current_require_bw * 0.9 and not startup and total_airtime > 0.5:
         goodput = current_throughput
         max_airtime = total_airtime
 
@@ -188,7 +188,7 @@ def on_message(client, userdata, msg):
     
     # output the quality
     try:
-        
+        '''
         input_file = open (output_path,'r')
         json_array = json.load(input_file)
         input_file.close()
@@ -197,7 +197,7 @@ def on_message(client, userdata, msg):
             output_file = open(output_path,"w")
             json.dump(output, output_file)
             output_file.close()
-        
+        '''
     except:
         pass
     
