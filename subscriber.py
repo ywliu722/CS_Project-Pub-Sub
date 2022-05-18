@@ -41,6 +41,8 @@ other_history_airtime = {}
 current_require_bw = 60
 startup = True
 
+bw_meet_threshold = 0.9
+
 output_path = '/home/nems/yw/CS_Project-Linux_Trinus/test.json'
 
 def on_connect(client, userdata, flags, rc):
@@ -126,30 +128,31 @@ def on_message(client, userdata, msg):
             goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other - history_airtime)*(history_airtime/exceed) )
 
     # modify the quality to lower one if the current throughput does not meet the requirement
-    if current_throughput < current_require_bw * 0.9 and not startup and total_airtime > 0.5:
+    # if current_throughput < current_require_bw * 0.9 and not startup and total_airtime > 0.5:
+    if current_throughput < current_require_bw and not startup:
         goodput = current_throughput
         max_airtime = total_airtime
 
     # if the current throughput meets the requirement and if the total used airtime is more than max_airtime, then let the total airtime be the max_airtime
     # this might need some modification
     ## [TODO]
-    elif current_throughput > current_require_bw * 0.85 and total_airtime > max_airtime:
+    elif current_throughput > current_require_bw and total_airtime > max_airtime:
         max_airtime = total_airtime
 
     if startup and current_throughput > 1.0:
         startup = False
 
     # decide the video rate
-    if goodput > bw_1080:
+    if goodput > bw_1080 * bw_meet_threshold:
         video_quality = "1080p"
         current_require_bw = bw_1080
-    elif goodput > bw_900:
+    elif goodput > bw_900 * bw_meet_threshold:
         video_quality = "900p"
         current_require_bw = bw_900
-    elif goodput > bw_720:
+    elif goodput > bw_720 * bw_meet_threshold:
         video_quality = "720p"
         current_require_bw = bw_720
-    elif goodput > bw_540:
+    elif goodput > bw_540 * bw_meet_threshold:
         video_quality = "540p"
         current_require_bw = bw_540
     else:
@@ -188,7 +191,7 @@ def on_message(client, userdata, msg):
     
     # output the quality
     try:
-        '''
+        
         input_file = open (output_path,'r')
         json_array = json.load(input_file)
         input_file.close()
@@ -197,7 +200,7 @@ def on_message(client, userdata, msg):
             output_file = open(output_path,"w")
             json.dump(output, output_file)
             output_file.close()
-        '''
+        
     except:
         pass
     
