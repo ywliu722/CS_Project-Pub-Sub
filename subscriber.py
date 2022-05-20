@@ -144,21 +144,21 @@ def on_message(client, userdata, msg):
         startup = False
 
     # decide the video rate
-    if goodput > bw_1080 * bw_meet_threshold:
+    if goodput > bw_1080:
         video_quality = "1080p"
         current_require_bw = bw_1080
-    elif goodput > bw_900 * bw_meet_threshold:
+    elif goodput > bw_900:
         video_quality = "900p"
         current_require_bw = bw_900
-    elif goodput > bw_720 * bw_meet_threshold:
+    elif goodput > bw_720:
         video_quality = "720p"
         current_require_bw = bw_720
-    elif goodput > bw_540 * bw_meet_threshold:
+    elif goodput > bw_540:
         video_quality = "540p"
         current_require_bw = bw_540
     else:
         video_quality = "360p"
-        current_require_bw = bw_720
+        current_require_bw = bw_360
 
     output = {
         "quality" : video_quality
