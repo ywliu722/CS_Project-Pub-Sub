@@ -28,11 +28,12 @@ throughput["NSS2"]["SGI"] = {"MCS0": 54.25, "MCS1": 109.5, "MCS2": 161.5, "MCS3"
                              "MCS5": 418.0,"MCS6": 458.0, "MCS7": 504.0, "MCS8": 580.5, "MCS9": 623.5}
  
 multi_device = True
-bw_1080 = 60    # required bandwidth for 1080p
-bw_900 = 40     # required bandwidth for 900p
-bw_720 = 30     # required bandwidth for 720p
-bw_540 = 20     # required bandwidth for 540p
-bw_360 = 10    # required bandwidth for 360p
+required_bw = [60, 40, 30, 20, 10]
+# bw_1080 = 60    # required bandwidth for 1080p
+# bw_900 = 40     # required bandwidth for 900p
+# bw_720 = 30     # required bandwidth for 720p
+# bw_540 = 20     # required bandwidth for 540p
+# bw_360 = 10    # required bandwidth for 360p
 alpha = 1/2
 max_airtime = 0.6
 min_airtime = 0.4
@@ -41,7 +42,7 @@ other_history_airtime = {}
 
 last_delta_per = 0.0    # delta between current throughput and required bandwidth
 last_slope = 0.0        # slope of two delta
-current_require_bw = 60
+current_require_bw = 0
 startup = True
 
 bw_meet_threshold = 0.9
@@ -132,44 +133,44 @@ def on_message(client, userdata, msg):
             goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other - history_airtime)*(history_airtime/exceed) )
 
     ## [proactive part]
-    current_delta_per = (current_throughput - current_require_bw) / current_require_bw
+    current_delta_per = (current_throughput - required_bw[current_require_bw]) / required_bw[current_require_bw]
     current_slope = current_delta_per - last_delta_per
     if last_slope > current_slope and current_delta_per < 0:
-        goodput = current_throughput * 0.9
+        goodput = required_bw[min(current_require_bw+1, 4)] # down-grade one quality
     last_delta_per = current_delta_per
     last_slope = current_slope
 
     ## [reactive part]
     # modify the quality to lower one if the current throughput does not meet the requirement
-    if current_throughput < current_require_bw * bw_meet_threshold and not startup and total_airtime > min_airtime:
+    if current_throughput < required_bw[current_require_bw] * bw_meet_threshold and not startup and total_airtime > min_airtime:
         goodput = current_throughput
         max_airtime = total_airtime
 
     # if the current throughput meets the requirement and if the total used airtime is more than max_airtime, then let the total airtime be the max_airtime
     # this might need some modification
     ## [TODO]
-    elif current_throughput > current_require_bw * bw_meet_threshold and total_airtime > max_airtime:
+    elif current_throughput > required_bw[current_require_bw] * bw_meet_threshold and total_airtime > max_airtime:
         max_airtime = total_airtime
 
     if startup and current_throughput > 1.0:
         startup = False
 
     # decide the video rate
-    if goodput > bw_1080:
+    if goodput > required_bw[0]:
         video_quality = "1080p"
-        current_require_bw = bw_1080
-    elif goodput > bw_900:
+        current_require_bw = 0
+    elif goodput > required_bw[1]:
         video_quality = "900p"
-        current_require_bw = bw_900
-    elif goodput > bw_720:
+        current_require_bw = 1
+    elif goodput > required_bw[2]:
         video_quality = "720p"
-        current_require_bw = bw_720
-    elif goodput > bw_540:
+        current_require_bw = 2
+    elif goodput > required_bw[3]:
         video_quality = "540p"
-        current_require_bw = bw_540
+        current_require_bw = 3
     else:
         video_quality = "360p"
-        current_require_bw = bw_360
+        current_require_bw = 4
 
     output = {
         "quality" : video_quality
