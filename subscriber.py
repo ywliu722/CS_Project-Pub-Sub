@@ -39,6 +39,8 @@ min_airtime = 0.4
 history_airtime = -1
 other_history_airtime = {}
 
+last_delta_per = 0.0    # delta between current throughput and required bandwidth
+last_slope = 0.0        # slope of two delta
 current_require_bw = 60
 startup = True
 
@@ -54,6 +56,7 @@ def on_message(client, userdata, msg):
     global history_airtime
     global other_history_airtime
     global max_airtime
+    global current_delta_per, current_slope
     global current_require_bw
     global startup
 
@@ -128,10 +131,18 @@ def on_message(client, userdata, msg):
         else:   # if there is any device exceeds the fairness part, then evenly distribute the last airtime to those exceeded devices
             goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other - history_airtime)*(history_airtime/exceed) )
 
+    ## [proactive part]
+    current_delta_per = (current_throughput - current_require_bw) / current_require_bw
+    current_slope = current_delta_per - last_delta_per
+    if last_slope > current_slope and current_delta_per < 0:
+        goodput = current_throughput * 0.9
+    last_delta_per = current_delta_per
+    last_slope = current_slope
+
+    ## [reactive part]
     # modify the quality to lower one if the current throughput does not meet the requirement
-    # if current_throughput < current_require_bw * 0.9 and not startup and total_airtime > 0.5:
     if current_throughput < current_require_bw * bw_meet_threshold and not startup and total_airtime > min_airtime:
-        goodput = current_throughput
+        goodput = min(goodput, current_throughput)
         max_airtime = total_airtime
 
     # if the current throughput meets the requirement and if the total used airtime is more than max_airtime, then let the total airtime be the max_airtime
