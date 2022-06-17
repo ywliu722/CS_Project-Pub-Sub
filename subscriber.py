@@ -56,7 +56,7 @@ def on_message(client, userdata, msg):
     global history_airtime
     global other_history_airtime
     global max_airtime
-    global current_delta_per, current_slope
+    global last_delta_per, last_slope
     global current_require_bw
     global startup
 
