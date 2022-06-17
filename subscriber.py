@@ -133,12 +133,12 @@ def on_message(client, userdata, msg):
             goodput = max_throughput * ( max_airtime * (1/n_device) + (max_airtime - sum_other - history_airtime)*(history_airtime/exceed) )
 
     ## [proactive part]
-    current_delta_per = (current_throughput - required_bw[current_require_bw]) / required_bw[current_require_bw]
-    current_slope = current_delta_per - last_delta_per
-    if last_slope > current_slope and current_delta_per < 0:
-        goodput = required_bw[min(current_require_bw+1, 4)] # down-grade one quality
-    last_delta_per = current_delta_per
-    last_slope = current_slope
+    #current_delta_per = (current_throughput - required_bw[current_require_bw]) / required_bw[current_require_bw]
+    #current_slope = current_delta_per - last_delta_per
+    #if last_slope > current_slope and current_delta_per < 0:
+    #    goodput = required_bw[min(current_require_bw+1, 4)] # down-grade one quality
+    #last_delta_per = current_delta_per
+    #last_slope = current_slope
 
     ## [reactive part]
     # modify the quality to lower one if the current throughput does not meet the requirement
@@ -156,16 +156,16 @@ def on_message(client, userdata, msg):
         startup = False
 
     # decide the video rate
-    if goodput > required_bw[0]:
+    if goodput >= required_bw[0]:
         video_quality = "1080p"
         current_require_bw = 0
-    elif goodput > required_bw[1]:
+    elif goodput >= required_bw[1]:
         video_quality = "900p"
         current_require_bw = 1
-    elif goodput > required_bw[2]:
+    elif goodput >= required_bw[2]:
         video_quality = "720p"
         current_require_bw = 2
-    elif goodput > required_bw[3]:
+    elif goodput >= required_bw[3]:
         video_quality = "540p"
         current_require_bw = 3
     else:
