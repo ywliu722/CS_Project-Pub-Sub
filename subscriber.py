@@ -45,7 +45,7 @@ last_slope = 0.0        # slope of two delta
 current_require_bw = 0
 startup = True
 
-bw_meet_threshold = 0.9
+bw_meet_threshold = 0.95
 
 output_path = '/home/nems/yw/CS_Project-Linux_Trinus/test.json'
 
