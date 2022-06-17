@@ -142,7 +142,7 @@ def on_message(client, userdata, msg):
     ## [reactive part]
     # modify the quality to lower one if the current throughput does not meet the requirement
     if current_throughput < current_require_bw * bw_meet_threshold and not startup and total_airtime > min_airtime:
-        goodput = min(goodput, current_throughput)
+        goodput = current_throughput
         max_airtime = total_airtime
 
     # if the current throughput meets the requirement and if the total used airtime is more than max_airtime, then let the total airtime be the max_airtime
