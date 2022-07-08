@@ -16,12 +16,11 @@ current_tx = 0
 current_other_tx = {}
 
 while True:
+	# busy waiting until reaching 1 second
+	time_now = time.time()
+	if time_now - current_time < 1 :
+		continue
 	try:
-		# busy waiting until reaching 1 second
-		time_now = time.time()
-		if time_now - current_time < 1 :
-			continue
-
 		# read target device
 		target_file = f'/sys/kernel/debug/ieee80211/phy0/netdev:wlan0/stations/{target_MAC}/stats'
 		input_file = open(target_file,'r')
@@ -73,4 +72,4 @@ while True:
 		current_tx = tx
 		print(output)
 	except:
-		continue
+		print('Cannot find the target device!')
