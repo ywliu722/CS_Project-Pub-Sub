@@ -63,6 +63,13 @@ def on_message(client, userdata, msg):
     output.write(f'{nss[3]} {mcs_index[3]} {GI_in_num} {throughput} {airtime_per} {other_device_airtime_per}\n')
     output.close()
 
+    # output the current state to stdout
+    print(f'{nss} {mcs_index} {guard_interval}')
+    print(f'Throughput: {throughput}')
+    print(f'Airtime: {airtime_per}')
+    print(f'Other Device: {other_device_airtime_per}')
+    print("-----------------------------------------------")
+
 def main():
     if len(sys.argv) != 2:
         print(f'Usage: $ python3 {sys.argv[0]} <broker IP>')
