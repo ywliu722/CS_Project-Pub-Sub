@@ -65,7 +65,7 @@ def on_message(client, userdata, msg):
 
     # output the current state to stdout
     print(f'{nss} {mcs_index} {guard_interval}')
-    print(f'Throughput: {throughput}')
+    print(f'Throughput: {round(throughput,2)}Mbps')
     print(f'Airtime: {airtime_per}')
     print(f'Other Device: {other_device_airtime_per}')
     print("-----------------------------------------------")
