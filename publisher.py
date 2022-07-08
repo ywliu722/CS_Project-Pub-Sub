@@ -33,7 +33,7 @@ while True:
 		other_station_msg = ""
 		for d in dirs:
 			# check if the current station is device 1 or not
-			if d == target_file:
+			if d == target_MAC:
 				continue
 
 			# read device stats
@@ -62,8 +62,6 @@ while True:
 		new_data = data_len - current_data_len
 
 		output = f'{nss} {mcs_index} {GI} {new_data} {time_now - current_time} {tx - current_tx}'
-		#output = nss + " " + mcs_index + " " + GI
-		#output = output + " " + str(new_data) + " " + str(time_now - current_time) + " " + str(tx - current_tx)
 		output = output + other_station_msg
 		
 		# publish the message to MQTT broker

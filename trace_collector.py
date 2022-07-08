@@ -59,7 +59,7 @@ def on_message(client, userdata, msg):
         other_device_airtime_per += current_device_airtime_per
 
     # output to file
-    output=open('OUTPUT_PATH', 'a')
+    output=open(OUTPUT_PATH, 'a')
     output.write(f'{nss[3]} {mcs_index[3]} {GI_in_num} {throughput} {airtime_per} {other_device_airtime_per}\n')
     output.close()
 
