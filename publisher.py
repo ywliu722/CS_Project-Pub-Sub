@@ -61,7 +61,7 @@ while True:
 		tx = int(input[9].split()[1])
 		new_data = data_len - current_data_len
 
-		output = f'{nss} {mcs_index} {GI} {str(new_data)} {str(time_now - current_time)} {str(tx - current_tx)}'
+		output = f'{nss} {mcs_index} {GI} {new_data} {time_now - current_time} {tx - current_tx}'
 		#output = nss + " " + mcs_index + " " + GI
 		#output = output + " " + str(new_data) + " " + str(time_now - current_time) + " " + str(tx - current_tx)
 		output = output + other_station_msg
