@@ -30,7 +30,9 @@ for line in lines:
     tmp = line.split(',')
     ack_num = 0
     timestamp = int(tmp[0].split()[0].split('.')[1])
+    print(timestamp)
     pkt_len = int(tmp[-1][:-1].split()[1])
+    print(pkt_len)
     if pkt_len <= 0:
         continue
     if "ack" in tmp[1]:

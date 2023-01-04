@@ -19,13 +19,14 @@ BYTE_TO_BITS = 8
 BITS_TO_MEGA = 1024 * 1024
 
 OUTPUT_PATH = 'network_trace.txt'
-
+index = 0
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     client.subscribe("TESTING")
 
 def on_message(client, userdata, msg):
+    global index
     # record the other device airtime
     other_device_airtime_per = 0.0  # in percentage
 
@@ -64,11 +65,13 @@ def on_message(client, userdata, msg):
     output.close()
 
     # output the current state to stdout
+    print(f'#{index}')
     print(f'{nss} {mcs_index} {guard_interval}')
     print(f'Throughput: {throughput} Mbps')
     print(f'Airtime: {airtime_per}')
     print(f'Other Device: {other_device_airtime_per}')
     print("-----------------------------------------------")
+    index += 1
 
 def main():
     if len(sys.argv) != 2:
