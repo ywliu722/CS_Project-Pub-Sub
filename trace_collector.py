@@ -16,7 +16,7 @@ MQTT_PORT = 1883
 
 SEC_TO_US = 1000000
 BYTE_TO_BITS = 8
-BITS_TO_MEGA = 1024 * 1024
+BITS_TO_MEGA = 1000 * 1000
 
 OUTPUT_PATH = 'network_trace.txt'
 index = 0
