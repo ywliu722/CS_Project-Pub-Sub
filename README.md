@@ -1,63 +1,63 @@
-# OpenWrt MT7915 Rate-Info Driver Extension
+# Rate-Aware Video Streaming: Decision Module (MQTT Pub-Sub)
 
-> A modified OpenWrt mt76/mt7915 driver that exposes per-station Wi-Fi rate
-> information — MCS, MIMO mode, bandwidth, and transmit airtime — via debugfs,
-> feeding a rate-aware video-streaming adaptation system.
+> An MQTT pub-sub module that estimates per-station goodput from live Wi-Fi rate
+> info and selects the best sustainable streaming quality, on a Wi-Fi
+> edge-computing platform.
 
 ## Background
 
-The driver layer of a **solo** undergraduate CS capstone on *proactive
-radio-aware quality adaptation for VR video streaming over a Wi-Fi
-edge-computing platform*. Rather than reacting to application-layer stalls after
-they happen, the system reads link-layer rate info from the router and adjusts
-streaming quality **before** the channel degrades the experience.
-
-The metrics extracted here feed the
-[decision module](https://github.com/ywliu722/CS_Project-Pub-Sub).
+The decision module of a **solo** undergraduate CS capstone on *proactive
+radio-aware adaptation for VR video streaming*. The companion driver
+([CS_Project-openwrt-mt7915-csi](https://github.com/ywliu722/CS_Project-openwrt-mt7915-csi))
+publishes per-station rate info from the router over MQTT; this module
+subscribes, estimates achievable goodput, and tells the
+[streaming server](https://github.com/ywliu722/CS_Project-Linux_Trinus) what
+quality to serve — before congestion causes a stall.
 
 ## What This Does
 
-- Extends the MediaTek **mt7915** driver (mt76) to surface per-station rate info
-  through the debugfs `stats` file: MCS index, MIMO mode, bandwidth
-- **Adds transmit airtime**, which the driver did not expose: traced the
-  TX-completion path (`mt7915_tx_complete_status` →
-  `struct ieee80211_tx_status.info->tx_time_est`), cached it in
-  `struct mt7915_sta`, and emitted it from `mt7915_sta_stats_read`
-- Patched firmware/driver to fix a guard-interval control issue so a fixed Tx
-  rate could be pinned via debugfs `fixed_rate` for controlled measurements
+- **Subscribes** (MQTT) to per-station rate info from the router: MCS index, NSS,
+  guard interval, bandwidth, airtime
+- **Estimates goodput**: from Wi-Fi airtime-fairness, derives the station's max
+  usable airtime, multiplies its airtime-occupancy ratio by the peak rate for the
+  current Tx rate → live goodput estimate
+- **Selects quality**: maps goodput to the highest streaming quality it can
+  sustain and publishes the choice to the streaming server
+- Per-rate peak throughput and per-quality minimum rates were **measured
+  experimentally** (iPerf3 with pinned `fixed_rate`; Wireshark throughput stats)
+
+## Why MQTT
+
+The router and the edge platform are separate machines, so the rate info has to
+travel over the network. MQTT is lightweight and well-suited to embedded / IoT
+messaging, which fits the router as the publisher and the decision module as the
+subscriber. Broker: Mosquitto; client: paho-mqtt.
+
+## Architecture
+
+```
+[Router] mt7915 debugfs stats ─► MQTT publisher ──┐ (MQTT)
+                                                   ▼
+                                 [Edge] Decision module (subscriber)
+                                 goodput estimate ─► best quality
+                                                   │ (publish)
+                                                   ▼
+                                 LinusTrinus streaming server
+```
 
 ## Tech Stack
 
-- **Platform:** OpenWrt 21.02
-- **Hardware:** BPI-R64 — MediaTek MT7622 SoC + MT7915 NIC (802.11ax-capable; run in 802.11ac for this project)
-- **Driver base:** mt76 (mainline Linux Wi-Fi driver for MediaTek chips)
-- **Languages:** C (driver), Shell (build / flash)
-- **Flashing:** OpenWrt buildroot image written over TFTP + U-Boot / Minicom
-
-## Pipeline
-
-```
-MT7915 NIC ─► mt76/mt7915 driver ─► debugfs `stats` (MCS, MIMO, BW, +airtime)
-                                          │
-                                          ▼
-                                MQTT publisher (on router)
-                                          │
-                                          ▼
-                          Decision module on edge platform
-```
-
-## Related Repos
-
-- [CS_Project-Pub-Sub](https://github.com/ywliu722/CS_Project-Pub-Sub) — MQTT decision module that consumes this rate info
-- [CS_Project-Linux_Trinus](https://github.com/ywliu722/CS_Project-Linux_Trinus) — the VR streaming server that acts on the decisions
+- **Messaging:** MQTT (paho-mqtt + Mosquitto broker)
+- **Language:** Python 3.9
+- **Runs on:** edge platform (Ubuntu 20.04 PC) ↔ OpenWrt router
 
 ## What I Learned
 
-- Linux Wi-Fi driver internals (mt76) and the mac80211 TX-status path
-- debugfs as a kernel → userspace telemetry interface
-- Modifying a vendor driver inside the OpenWrt build system
+- Designing a real-time sensing → decision pipeline under latency constraints
+- Why a lightweight pub-sub protocol (MQTT) fits embedded / IoT messaging
+- Turning an airtime-fairness model into a measured, working goodput estimator
 
 ## Status
 
-Solo undergraduate capstone (2021–22). Working prototype, validated with a real
-VR streaming workload. Not actively maintained.
+Solo undergraduate capstone (2021–22). Demonstrated with a real VR streaming
+workload — [demo video](https://www.youtube.com/watch?v=0c7IfljchAo).
